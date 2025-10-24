@@ -1,8 +1,41 @@
 [project]
-name = "labs"
+name = "Terminal"
 version = "0.1.0"
-description = "Add your description here"
+description = "Mini Terminal like bash for Laboratory job MAI"
 requires-python = ">=3.12"
-dependencies = [
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.1",
     "pytest>=8.4.2",
+    "mypy>=1.18.2",
+    "pre-commit>=4.3.0",
 ]
+
+[tool.ruff]
+line-length = 79
+target-version = 'py312'
+
+[tool.ruff.lint]
+select = ['E', 'F', 'I', 'B', 'Q']
+fixable = ['ALL']
+ignore = ['E101']
+
+[tool.ruff.format]
+quote-style = 'single'
+docstring-code-format = true
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = 'single'
+multiline-quotes = "double"
+
+[tool.mypy]
+python_version = '3.12'
+disallow_untyped_defs = true
+ignore_missing_imports = true
+strict_optional = true
+
+[tool.pytest.ini_options]
+testpaths = ['tests']
+pythonpath = ['src/']
