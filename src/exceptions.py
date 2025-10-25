@@ -37,3 +37,10 @@ class IsNotFile(TerminalException):
 
     def __init__(self, message: str) -> None:
         super().__init__(message)
+
+
+class IsNotArchive(TerminalException):
+    """Исключение выполнения операции для архивов не над архивами"""
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message)

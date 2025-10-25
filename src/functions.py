@@ -7,7 +7,7 @@ import src.exceptions
 from src.utilities import utilities
 
 
-def file_path_cp_mv(file: str, path: str) -> str:
+def resolve_file_path(file: str, path: str) -> str:
     """
     Преобразует path для команды cp без флага -r (для файлов) и mv.
 
@@ -50,7 +50,7 @@ def file_path_cp_mv(file: str, path: str) -> str:
         return path
 
 
-def dir_path_cp_mv(file: str, path: str) -> str:
+def resolve_dir_path(file: str, path: str) -> str:
     """
     Преобразует path для команды cp c флагом -r (для директорий) и mv.
 
@@ -195,3 +195,19 @@ def detailed_output(path: str) -> None:
             time_mode = datetime.fromtimestamp(int(file_stat.st_mtime))
             time_mode_f = time_mode.strftime('%b %d %H:%M')
             print(f'{file} {size} {time_mode_f} {modes}')
+
+
+def is_archive(path: str) -> bool:
+    """
+    Проверяет, является ли path архивом.
+
+    Args:
+        path(str) - исходный путь к файлу.
+
+    Returns:
+        True, если архив. Исключение IsNotArchive, если не архив.
+    """
+    for exp in ['.zip', '.tar', '.tar.gz', '.tar.bz', '.tar.xz']:
+        if path.endswith(exp):
+            return True
+    raise src.exceptions.IsNotArchive(f'{path} - не архив.')

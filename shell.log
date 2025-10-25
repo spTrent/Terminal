@@ -18,3 +18,75 @@
 [2025-10-24 23:50:42]; INFO Success
 [2025-10-24 23:50:47]; INFO cd ~/Calculator
 [2025-10-24 23:50:47]; INFO Success
+[2025-10-25 18:28:21]; INFO zip src myarch
+[2025-10-25 18:28:21]; ERROR Не существует указанного пути myarch
+[2025-10-25 18:30:52]; INFO zip src myarch
+[2025-10-25 18:32:16]; INFO zip src myarch
+[2025-10-25 18:32:16]; INFO Success
+[2025-10-25 18:32:33]; INFO zip tests src
+[2025-10-25 18:32:33]; INFO Success
+[2025-10-25 18:32:50]; INFO zip tests zalupa/
+[2025-10-25 18:32:50]; INFO Success
+[2025-10-25 18:33:04]; INFO zip tests hui/my
+[2025-10-25 18:33:04]; ERROR Не существует указанного пути hui
+[2025-10-25 18:38:39]; INFO zip tests hui
+[2025-10-25 18:38:39]; INFO Success
+[2025-10-25 18:50:08]; INFO zip src hui
+[2025-10-25 18:50:08]; INFO Success
+[2025-10-25 18:50:11]; INFO unzip hui
+[2025-10-25 18:50:11]; ERROR Не существует указанного пути hui
+[2025-10-25 18:50:26]; INFO unzip hui.zip
+[2025-10-25 18:50:26]; INFO Success
+[2025-10-25 18:59:28]; INFO zip tests zalupa
+[2025-10-25 18:59:28]; INFO Success
+[2025-10-25 18:59:35]; INFO unzip zalupa.zip
+[2025-10-25 19:03:47]; INFO cd src
+[2025-10-25 19:03:47]; INFO Success
+[2025-10-25 19:03:49]; INFO cd ..
+[2025-10-25 19:03:49]; INFO Success
+[2025-10-25 19:10:28]; INFO zip src zalupa
+[2025-10-25 19:10:28]; INFO Success
+[2025-10-25 19:10:34]; INFO unpack zalupa
+[2025-10-25 19:10:34]; ERROR Неизвестная команда unpack
+[2025-10-25 19:10:45]; INFO unzip zalupa.zip
+[2025-10-25 19:10:45]; INFO Success
+[2025-10-25 19:12:52]; INFO tar src hui
+[2025-10-25 19:12:52]; ERROR Неизвестная команда tar
+[2025-10-25 19:13:06]; INFO tar src hui
+[2025-10-25 19:14:23]; INFO tar src hui
+[2025-10-25 19:15:15]; INFO tar src hui
+[2025-10-25 19:15:15]; INFO Success
+[2025-10-25 19:15:37]; INFO tar tests zalupa
+[2025-10-25 19:15:37]; INFO Success
+[2025-10-25 19:25:55]; INFO tar src hui
+[2025-10-25 19:25:55]; INFO Success
+[2025-10-25 19:26:05]; INFO untar hui.tar.gz
+[2025-10-25 19:26:05]; ERROR Неизвестная команда untar
+[2025-10-25 19:26:55]; INFO rm hui.tar.gz
+[2025-10-25 19:26:58]; INFO Success
+[2025-10-25 19:27:06]; INFO tar src hui
+[2025-10-25 19:27:06]; INFO Success
+[2025-10-25 19:27:12]; INFO untar hui.tar.gz
+[2025-10-25 19:27:12]; ERROR Неизвестная команда untar
+[2025-10-25 19:27:26]; INFO rm hui.tar.gz
+[2025-10-25 19:27:27]; INFO Success
+[2025-10-25 19:27:33]; INFO tar src hui
+[2025-10-25 19:27:33]; INFO Success
+[2025-10-25 19:27:39]; INFO untar hui.tar.gz
+[2025-10-25 19:27:39]; INFO Success
+[2025-10-25 19:43:23]; INFO zip src hui
+[2025-10-25 19:43:23]; INFO Success
+[2025-10-25 19:43:31]; INFO unzip hui.zip
+[2025-10-25 19:43:31]; INFO Success
+[2025-10-25 19:43:39]; INFO tar tests zalupa
+[2025-10-25 19:43:39]; INFO Success
+[2025-10-25 19:43:46]; INFO untar zalupa.tar.gz
+[2025-10-25 19:43:46]; INFO Success
+[2025-10-25 19:43:54]; INFO rm -r zalupa
+[2025-10-25 19:43:55]; INFO Success
+[2025-10-25 19:44:03]; INFO rm zalupa.tar.gz
+[2025-10-25 19:44:05]; INFO Success
+[2025-10-25 19:44:10]; INFO rm -r hui
+[2025-10-25 19:44:11]; INFO Success
+[2025-10-25 19:44:17]; INFO rm hui.zip
+[2025-10-25 19:44:18]; INFO Success

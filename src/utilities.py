@@ -1,5 +1,6 @@
 import os
 import shutil
+from typing import Callable
 
 import src.exceptions
 import src.functions
@@ -90,21 +91,21 @@ def cp(args: list) -> None:
 
 
     Returns:
-        str - Имена файлов.
+        None
     """
     print(args)
     try:
         if len(args) == 2:
             path_file = src.functions.normalize_path(args[0])
             file_name = path_file.split(os.sep)[-1]
-            path_dest = src.functions.file_path_cp_mv(file_name, args[1])
+            path_dest = src.functions.resolve_file_path(file_name, args[1])
             src.functions.is_correct_file(path_file)
             shutil.copy(path_file, path_dest)
         elif len(args) == 3:
             if args[0] == '-r':
                 path_file = src.functions.normalize_path(args[1])
                 dir_name = path_file.split(os.sep)[-1]
-                path_dest = src.functions.dir_path_cp_mv(dir_name, args[2])
+                path_dest = src.functions.resolve_dir_path(dir_name, args[2])
                 src.functions.is_correct_directory(path_file)
                 shutil.copytree(path_file, path_dest, dirs_exist_ok=True)
             else:
@@ -130,7 +131,7 @@ def mv(args: list) -> None:
             Путь 2 - путь назначения.
 
     Returns:
-        str - Имена файлов.
+        None
     """
     try:
         if len(args) != 2:
@@ -140,9 +141,9 @@ def mv(args: list) -> None:
         path_file = src.functions.normalize_path(args[0])
         file_name = path_file.split(os.sep)[-1]
         if os.path.isfile(path_file):
-            path_dest = src.functions.file_path_cp_mv(file_name, args[1])
+            path_dest = src.functions.resolve_file_path(file_name, args[1])
         else:
-            path_dest = src.functions.dir_path_cp_mv(file_name, args[1])
+            path_dest = src.functions.resolve_dir_path(file_name, args[1])
         shutil.move(path_file, path_dest)
     except PermissionError:
         print('Ошибка: Недостаточно прав')
@@ -159,16 +160,15 @@ def rm(args: list) -> None:
         Необходимые:
             Пути файлов. (Хотя бы один).
 
-
     Returns:
-        str - Имена файлов.
+        None
     """
     try:
         if len(args) == 1:
             path = src.functions.normalize_path(args[0])
             src.functions.is_correct_file(path)
             approve = input(f'Удалить {path}? [y / n]')
-            if approve == 'y':
+            if approve.lower() == 'y':
                 os.remove(path)
         elif len(args) == 2:
             if args[0] != '-r':
@@ -180,7 +180,7 @@ def rm(args: list) -> None:
                 )
             src.functions.is_correct_directory(path)
             approve = input(f'Удалить {path}? [y / n]')
-            if approve == 'y':
+            if approve.lower() == 'y':
                 shutil.rmtree(path)
         else:
             raise src.exceptions.IncorrectInput(
@@ -190,11 +190,73 @@ def rm(args: list) -> None:
         print('Ошибка: Недостаточно прав')
 
 
-utilities = {
+def archive(command: str, args: list) -> None:
+    """
+    Создает архив из директории, указанной в args.
+
+    Если command это zip, то формат .zip.
+    Если command это tar, то формат .zip.gz
+
+    Args:
+        args(list) - список аргументов.
+        Возможные и необходимые:
+            Путь 1 - архивируемая директория.
+            Путь 2 - путь созданного архива.
+
+    Returns:
+        None
+    """
+    if len(args) != 2:
+        raise src.exceptions.IncorrectInput(
+            f'Неверное количество аргументов для {command} ({len(args)})'
+        )
+    dir_path = src.functions.normalize_path(args[0])
+    src.functions.is_correct_directory(dir_path)
+    dir_name = dir_path.split(os.sep)[-1]
+    dest_path = src.functions.resolve_file_path(dir_name, args[1])
+    if command == 'zip':
+        shutil.make_archive(dest_path, 'zip', dir_path)
+    else:
+        shutil.make_archive(dest_path, 'gztar', dir_path)
+
+
+def unpack(args: list) -> None:
+    """
+    Распаковывает архив, указанный в args.
+
+    Проверяет, является ли файл архивом.
+    Если да, то распаковывает.
+    Если нет, то бросает исключение IsNotArchiveю.
+
+    Args:
+        args(list) - список аргументов.
+        Возможный и Необходимый:
+            Путь 1 - путь к архиву, который нужно распаковать.
+
+    Returns:
+        None
+    """
+    if len(args) != 1:
+        raise src.exceptions.IncorrectInput(
+            f'Неверное количество аргументов для unzip ({len(args)})'
+        )
+    file_path = src.functions.normalize_path(args[0])
+    file = file_path.split(os.sep)[-1]
+    file_name = file.split('.')[0]
+    src.functions.is_archive(file_path)
+    unzip_dest = os.path.join(os.getcwd(), file_name)
+    shutil.unpack_archive(file_path, unzip_dest)
+
+
+utilities: dict[str, Callable] = {
     'ls': ls,
     'cd': cd,
     'cat': cat,
     'cp': cp,
     'mv': mv,
     'rm': rm,
+    'unzip': unpack,
+    'untar': unpack,
+    'zip': archive,
+    'tar': archive,
 }

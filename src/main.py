@@ -9,13 +9,16 @@ import src.utilities
 def main() -> None:
     while 1:
         try:
-            stdin = input(f'{os.getcwd()}$ ')
+            current_dir = os.getcwd().replace(os.path.expanduser('~'), '~')
+            stdin = input(f'{current_dir}$ ')
             src.logger.main_logger.info(stdin)
             if not stdin:
                 break
             command, *args = src.functions.tokenize(stdin)
-            # print(*args)
-            src.utilities.utilities[command](*args)
+            if command in ['zip', 'tar']:
+                src.utilities.archive(command, *args)
+            else:
+                src.utilities.utilities[command](*args)
             src.logger.main_logger.info('Success')
 
         except src.exceptions.TerminalException as message:
