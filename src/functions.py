@@ -15,11 +15,11 @@ def resolve_file_path(file: str, path: str) -> str:
     Проверяет является ли путь абсолютным:
     Если да, то в path добавляется имя файла.
     Если нет, то проверяет, не пытается ли пользователь
-    записать файл в файл (исключение).
+    создать файл с существующим именем.
 
     Если path не существует, значит пользователь
-    хочет скопировать в файл с новым именем
-    (или неправильную папку (исключение)).
+    хочет создать файл с новым именем
+    (или в несуществующую папку (исключение)).
 
     Проверяет path без file в конце на существование и корректность.
     Если все правильно - возвращает path.
@@ -35,47 +35,10 @@ def resolve_file_path(file: str, path: str) -> str:
     path = path.replace('~', os.path.expanduser('~'))
     if os.path.exists(path) and os.path.isabs(path) and os.path.isdir(path):
         return os.path.join(path, file)
+    elif os.path.exists(path) and os.path.isdir(path):
+        return os.path.join(os.getcwd(), path, file)
     elif os.path.exists(path):
-        if os.path.isdir(path):
-            return os.path.join(os.getcwd(), path, file)
-        else:
-            raise src.exceptions.IsNotDirectory(
-                f'Нельзя создать файл в существующий файл {path}'
-            )
-    else:
-        dir_path = os.sep.join(path.split(os.sep)[:-1])
-        if not dir_path:
-            return path
-        dir_path = normalize_path(dir_path)
-        is_correct_directory(dir_path)
-        return path
-
-
-def resolve_dir_path(file: str, path: str) -> str:
-    """
-    Преобразует path для команды cp c флагом -r (для директорий) и mv.
-
-    Проверяет является ли путь абсолютным:
-    Если да, то в path добавляется имя  копируемой директории.
-    Если нет, приводит к абсолютному и добавляет имя копируемой директории.
-    Если path не существует, то бросает исключение PathError.
-
-    Args:
-        file - имя копируемой директории.
-        path(str) - путь, куда нужно скопировать.
-
-    Returns:
-        str - преобразованный path.
-    """
-    path = path.rstrip(os.sep)
-    path = path.replace('~', os.path.expanduser('~'))
-    if os.path.exists(path) and os.path.isabs(path) and os.path.isdir(path):
-        return os.path.join(path, file)
-    elif os.path.exists(path):
-        if os.path.isdir(path):
-            return os.path.join(os.getcwd(), path, file)
-        else:
-            raise src.exceptions.IsNotDirectory(f'{path} - не директория')
+        raise src.exceptions.IsNotDirectory(f'Файл {path} уже существует')
     else:
         dir_path = os.sep.join(path.split(os.sep)[:-1])
         if not dir_path:

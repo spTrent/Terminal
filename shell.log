@@ -429,3 +429,44 @@
 [2025-10-26 16:40:09]; INFO rm hui2.tar.gz
 [2025-10-26 16:40:11]; INFO Success
 [2025-10-26 16:40:51]; INFO
+[2025-10-26 18:14:44]; INFO ls
+[2025-10-26 18:14:44]; INFO Success
+[2025-10-26 18:14:47]; INFO cd ..
+[2025-10-26 18:14:47]; INFO Success
+[2025-10-26 18:14:48]; INFO ls
+[2025-10-26 18:14:48]; INFO Success
+[2025-10-26 18:14:55]; INFO cp CTest hui
+[2025-10-26 18:14:55]; ERROR /home/sptrent/CTest - не файл
+[2025-10-26 18:16:35]; INFO cp -r CTest hui
+[2025-10-26 18:16:35]; INFO Success
+[2025-10-26 18:16:37]; INFO ls
+[2025-10-26 18:16:37]; INFO Success
+[2025-10-26 18:16:40]; INFO cd hui
+[2025-10-26 18:16:40]; INFO Success
+[2025-10-26 18:16:41]; INFO ls
+[2025-10-26 18:16:41]; INFO Success
+[2025-10-26 18:16:46]; INFO cd ..
+[2025-10-26 18:16:46]; INFO Success
+[2025-10-26 18:16:50]; INFO cd CTest
+[2025-10-26 18:16:50]; INFO Success
+[2025-10-26 18:16:51]; INFO ls
+[2025-10-26 18:16:51]; INFO Success
+[2025-10-26 18:16:54]; INFO cd ..
+[2025-10-26 18:16:54]; INFO Success
+[2025-10-26 18:16:55]; INFO ls
+[2025-10-26 18:16:55]; INFO Success
+[2025-10-26 18:17:01]; INFO mv CTest C
+[2025-10-26 18:17:01]; INFO Success
+[2025-10-26 18:17:02]; INFO ls
+[2025-10-26 18:17:02]; INFO Success
+[2025-10-26 18:17:19]; INFO cd hui TESTcd/zapulaep
+[2025-10-26 18:17:19]; ERROR Слишком много аргументов для cd
+[2025-10-26 18:17:30]; INFO cp hui TESTcd/zapulaep
+[2025-10-26 18:17:30]; ERROR /home/sptrent/hui - не файл
+[2025-10-26 18:17:34]; INFO cp -r hui TESTcd/zapulaep
+[2025-10-26 18:17:34]; INFO Success
+[2025-10-26 18:17:46]; INFO cd TESTcd
+[2025-10-26 18:17:46]; INFO Success
+[2025-10-26 18:17:47]; INFO ls
+[2025-10-26 18:17:47]; INFO Success
+[2025-10-26 18:17:52]; INFO

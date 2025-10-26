@@ -97,16 +97,15 @@ def cp(flag: str, paths: list[str]) -> None:
         src.exceptions.IncorrectInput('Неверное количество путей для cp')
     file_path = src.functions.normalize_path(paths[0])
     file_name = file_path.split(os.sep)[-1]
+    dest_path = src.functions.resolve_file_path(file_name, paths[1])
     try:
         if flag and flag == 'r':
-            dest_path = src.functions.resolve_dir_path(file_name, paths[1])
             src.functions.is_correct_directory(file_path)
             shutil.copytree(file_path, dest_path, dirs_exist_ok=True)
             for_undo_history.append(['cp', 'dir', file_path, dest_path])
         elif flag:
             raise src.exceptions.IncorrectFlag(f'Неверный флаг -{flag} для cp')
         else:
-            dest_path = src.functions.resolve_file_path(file_name, paths[1])
             src.functions.is_correct_file(file_path)
             shutil.copy(file_path, dest_path)
             for_undo_history.append(['cp', 'file', file_path, dest_path])
@@ -141,7 +140,7 @@ def mv(flag: str, paths: list[str]) -> None:
                     file_name, dest_path
                 )
             else:
-                dest_path = src.functions.resolve_dir_path(
+                dest_path = src.functions.resolve_file_path(
                     file_name, dest_path
                 )
             shutil.move(file, dest_path)
@@ -214,7 +213,7 @@ def make_archive(command: str, flag: str, paths: list[str]) -> None:
     dir_path = src.functions.normalize_path(paths[0])
     src.functions.is_correct_directory(dir_path)
     dir_name = dir_path.split(os.sep)[-1]
-    dest_path = src.functions.resolve_dir_path(dir_name, paths[1])
+    dest_path = src.functions.resolve_file_path(dir_name, paths[1])
     if command == 'zip':
         shutil.make_archive(dest_path, 'zip', dir_path)
     else:
