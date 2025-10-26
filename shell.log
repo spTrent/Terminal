@@ -420,3 +420,12 @@
 [2025-10-26 16:19:00]; INFO ls
 [2025-10-26 16:19:00]; INFO Success
 [2025-10-26 16:19:03]; INFO
+[2025-10-26 16:38:24]; INFO tar tests hui2
+[2025-10-26 16:38:24]; INFO Success
+[2025-10-26 16:38:33]; INFO untar hui2.tar.gz
+[2025-10-26 16:38:33]; INFO Success
+[2025-10-26 16:39:59]; INFO rm -r hui2
+[2025-10-26 16:40:01]; INFO Success
+[2025-10-26 16:40:09]; INFO rm hui2.tar.gz
+[2025-10-26 16:40:11]; INFO Success
+[2025-10-26 16:40:51]; INFO

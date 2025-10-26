@@ -144,3 +144,8 @@
 144 rm -r Calculator
 145 ls
 146
+147 tar tests hui2
+148 untar hui2.tar.gz
+149 rm -r hui2
+150 rm hui2.tar.gz
+151
