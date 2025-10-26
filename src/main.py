@@ -22,7 +22,7 @@ def main() -> None:
                 break
             command, flag, paths = src.functions.tokenize(stdin)
             if command in ['zip', 'tar', 'unzip', 'untar']:
-                src.utilities.archivers[command](command, flag, paths)
+                src.utilities.utilities[command](command, flag, paths)
             else:
                 src.utilities.utilities[command](flag, paths)
             src.logger.main_logger.info('Success')

@@ -1,6 +1,5 @@
 import os
 import re
-import shutil
 import stat
 from datetime import datetime
 
@@ -127,7 +126,7 @@ def tokenize(stdin: str) -> tuple[str, str, list[str]]:
     if command not in utilities:
         raise src.exceptions.IncorrectCommand(f'Неизвестная команда {command}')
     if args:
-        if '-' in args[0]:
+        if args[0].startswith('-'):
             flag = args[0][1:]
             paths = args[1:]
         else:
@@ -191,8 +190,8 @@ def is_archive(path: str) -> bool:
     raise src.exceptions.IsNotArchive(f'{path} - не архив.')
 
 
-def cp_undo(file_type: str, dest_path: str) -> None:
-    if file_type == 'dir':
-        shutil.rmtree(dest_path)
-    else:
-        os.remove(dest_path)
+def is_correct_flag(flag: set, allowed_flags: set) -> bool:
+    for f in flag:
+        if f not in allowed_flags:
+            raise src.exceptions.IncorrectFlag(f'Неправильный флаг {f}')
+    return True

@@ -5,9 +5,9 @@ from typing import Callable
 import src.exceptions
 import src.functions
 
-for_undo_history = []
-history_path = os.path.join(os.getcwd(), 'src/.history')
-trash_path = os.path.join(os.getcwd(), 'src/.trash')
+for_undo_history: list[list] = []
+history_path: str = os.path.join(os.getcwd(), 'src/.history')
+trash_path: str = os.path.join(os.getcwd(), 'src/.trash')
 os.mkdir(trash_path)
 
 
@@ -24,6 +24,8 @@ def ls(flag: str, paths: list[str]) -> None:
     Prints:
         str - Имена файлов.
     """
+    if flag:
+        src.functions.is_correct_flag(set(flag), {'l'})
     paths = paths if paths else [os.getcwd()]
     for path in paths:
         path = src.functions.normalize_path(path)
@@ -31,10 +33,6 @@ def ls(flag: str, paths: list[str]) -> None:
         print(f'{path.split(os.sep)[-1]}: ')
         if flag and flag == 'l':
             src.functions.detailed_output(path)
-        elif flag:
-            raise src.exceptions.IncorrectFlag(
-                f'Неверный флаг для ls ({flag})'
-            )
         else:
             src.functions.output(path)
         print()
@@ -93,22 +91,21 @@ def cp(flag: str, paths: list[str]) -> None:
     Returns:
         None
     """
+    if flag:
+        src.functions.is_correct_flag(set(flag), {'r'})
     if len(paths) != 2:
         src.exceptions.IncorrectInput('Неверное количество путей для cp')
     file_path = src.functions.normalize_path(paths[0])
     file_name = file_path.split(os.sep)[-1]
     dest_path = src.functions.resolve_file_path(file_name, paths[1])
     try:
-        if flag and flag == 'r':
+        if flag:
             src.functions.is_correct_directory(file_path)
             shutil.copytree(file_path, dest_path, dirs_exist_ok=True)
-            for_undo_history.append(['cp', 'dir', file_path, dest_path])
-        elif flag:
-            raise src.exceptions.IncorrectFlag(f'Неверный флаг -{flag} для cp')
         else:
             src.functions.is_correct_file(file_path)
             shutil.copy(file_path, dest_path)
-            for_undo_history.append(['cp', 'file', file_path, dest_path])
+        for_undo_history.append(['cp', flag, [file_path, dest_path]])
     except PermissionError:
         print('Ошибка: Недостаточно прав')
 
@@ -130,9 +127,10 @@ def mv(flag: str, paths: list[str]) -> None:
         raise src.exceptions.IncorrectInput(
             'Неверное количество аргументов для mv'
         )
+    moved: list = []
     dest_path = paths[-1]
-    try:
-        for file in paths[:-1]:
+    for file in paths[:-1]:
+        try:
             file = src.functions.normalize_path(file)
             file_name = file.split(os.sep)[-1]
             if os.path.isfile(file):
@@ -144,8 +142,10 @@ def mv(flag: str, paths: list[str]) -> None:
                     file_name, dest_path
                 )
             shutil.move(file, dest_path)
-    except PermissionError:
-        print('Ошибка: Недостаточно прав')
+            moved.append((file, dest_path))
+        except PermissionError:
+            print('Ошибка: Недостаточно прав')
+    for_undo_history.append(['mv', flag, moved])
 
 
 def rm(flag: str, paths: list[str]) -> None:
@@ -159,12 +159,17 @@ def rm(flag: str, paths: list[str]) -> None:
     Returns:
         None
     """
+    if flag:
+        src.functions.is_correct_flag(set(flag), {'r'})
     if not paths:
         raise src.exceptions.IncorrectInput('Не указан файл для удаления')
+    removed = []
     for file in paths:
         file = src.functions.normalize_path(file)
+        file_name = file.split(os.sep)[-1]
+        file_trash = os.path.join(trash_path, file_name)
         try:
-            if flag and flag == 'r':
+            if flag:
                 src.functions.is_correct_directory(file)
                 if file in os.getcwd():
                     raise src.exceptions.TerminalException(
@@ -172,18 +177,18 @@ def rm(flag: str, paths: list[str]) -> None:
                     )
                 approve = input(f'Удалить {file}? [y / n]')
                 if approve.lower() == 'y':
+                    cp('r', [file, file_trash])
                     shutil.rmtree(file)
-            elif flag:
-                raise src.exceptions.IncorrectFlag(
-                    f'Неверный флаг {flag} для rm'
-                )
             else:
                 src.functions.is_correct_file(file)
                 approve = input(f'Удалить {file}? [y / n]')
                 if approve.lower() == 'y':
+                    cp('', [file, file_trash])
                     os.remove(file)
+            removed.append((file, file_trash))
         except PermissionError:
             print(f'Ошибка: нет прав на удаление {file}')
+    for_undo_history.append(['rm', flag, removed])
 
 
 def make_archive(command: str, flag: str, paths: list[str]) -> None:
@@ -251,32 +256,39 @@ def unpack(command: str, flag: str, paths: list[str]) -> None:
     shutil.unpack_archive(file_path, unzip_dest)
 
 
-def history(args: list) -> None:
-    n = 0
-    if len(args) > 1:
-        raise src.exceptions.IncorrectInput(
-            f'Неверное количество аргументов для history ({len(args)})'
+def history(flag: str, paths: list) -> None:
+    if flag:
+        raise src.exceptions.IncorrectFlag(
+            'Для history не поддерживаются флаги'
         )
-    elif len(args) == 1:
-        n = int(args[0])
+    if len(paths) > 1:
+        raise src.exceptions.IncorrectInput(
+            'Неверное количество аргументов для history'
+        )
+    n = int(paths[0]) if paths else 0
     with open(history_path, 'r') as history:
         commands = history.readlines()
         for command in commands[-n:]:
             print(command.strip())
 
 
-# def undo(args: list) -> None:
-#     if len(args) != 0:
-#         raise src.exceptions.IncorrectInput(
-#             f'Неверное количество аргументов для undo ({len(args)})'
-#         )
-#     if len(for_undo_history) == 0:
-#         raise src.exceptions.NothingToUndo('Нечего отменять')
-#     command, file_type, file_path, dest_path = for_undo_history[-1]
-#     if command == 'cp':
-#         src.functions.cp_undo(file_type, dest_path)
-#     else:
-#         mv(dest_path, file_path)
+def undo(flag: str, paths: list) -> None:
+    if flag:
+        raise src.exceptions.IncorrectFlag('Для undo не поддерживаются флаги')
+    if paths:
+        raise src.exceptions.IncorrectInput(
+            'Для undo не поддерживаются аргументы'
+        )
+    if len(for_undo_history) == 0:
+        raise src.exceptions.NothingToUndo('Нечего отменять')
+    command, flag, paths = for_undo_history[-1]
+    print(f'команда: {command}, флаг: {flag}, путь: {paths}')
+    if command == 'cp':
+        dest_path = src.functions.normalize_path(paths[-1])
+        rm(flag, [dest_path])
+    else:
+        for file_path, dest_path in paths:
+            mv('', [dest_path, file_path])
 
 
 utilities: dict[str, Callable] = {
@@ -287,14 +299,7 @@ utilities: dict[str, Callable] = {
     'mv': mv,
     'rm': rm,
     'history': history,
-    # 'undo': undo,
-    'zip': make_archive,
-    'tar': make_archive,
-    'unzip': unpack,
-    'untar': unpack,
-}
-
-archivers: dict[str, Callable] = {
+    'undo': undo,
     'zip': make_archive,
     'tar': make_archive,
     'unzip': unpack,

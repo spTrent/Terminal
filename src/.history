@@ -170,3 +170,124 @@
 170 cd TESTcd
 171 ls
 172
+173 ls
+174 cd ..
+175 ls
+176 cd hui
+177 cd ..
+178 rm -r hui
+179 undo
+180
+181 cd ..
+182 ls
+183 cd TESTcd
+184 cd ..
+185 rm -r TESTcd
+186 undo
+187 ls
+188 cd C
+189 ls
+190 cd ..
+191 cd TESTcd
+192 ls
+193 mv zalupaep ..
+194 ls
+195 cd zalupaep
+196 cd zapulaep
+197 cd ..
+198 mv zapulaep ..
+199 ls
+200 undo
+201 ls
+202 cd ..
+203 ls
+204 cp Sales-Aggregator huek
+205 cp -r Sales-Aggregator zapupa
+206 ls
+207  cp Sales-Aggregator huek
+208
+209 cd ..
+210 ls
+211 cp Sales-Aggregator huishe
+212
+213 cd ..
+214 ls
+215 cp Sales-Aggregator huishe
+216 cp -r Sales-Aggregator huishe
+217 ls
+218 undo
+219 cd ..
+220 ls
+221 rm -r zapupa
+222 ls
+223 undo
+224 ls
+225 rm -r zapupa huishe huek
+226 ls
+227 undo
+228 ls
+229 rm -r zapupa huek huishe
+230 ls
+231 cp TESTcd hui
+232 cp -r TESTcd hui
+233 ls
+234 undo
+235 ls
+236 undo
+237
+238 cd ..
+239 ls
+240 cp hui zalupa
+241 cp -r hui zalupa
+242 ls
+243 undo
+244 ls
+245 cp README.md test.txt
+246 ls
+247
+248 cd ..
+249 ls
+250 rm test.txt
+251 rm -r zalupa
+252 ls
+253 cp -r hui zapula
+254 undo
+255
+256 cd ..
+257 ls
+258 rm -r hui
+259 ls
+260 undo
+261 ls
+262 rm -r hui zapula
+263 ls
+264 cp README.md test.txt
+265 ls
+266 undo
+267
+268 cd ..
+269 ls
+270 rm test.txt
+271 undo
+272 ls
+273 cp README.md test2.txt
+274 ls
+275 undo
+276
+277 cd ..
+278 ls
+279 cp README.md test3.txt
+280 ls
+281 undo
+282
+283 cd ..
+284 ls
+285 cp README.md TEST.txt
+286 ls
+287 undo
+288 ls
+289 cp -r Terminal hui
+290 ls
+291 undo
+292 ls
+293
