@@ -44,3 +44,17 @@ class IsNotArchive(TerminalException):
 
     def __init__(self, message: str) -> None:
         super().__init__(message)
+
+
+class IncorrectFlag(TerminalException):
+    """Исключение неверного ввода флага"""
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message)
+
+
+class NothingToUndo(TerminalException):
+    """Исключение выполнения undo, когда не осталось действий для отмены"""
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message)

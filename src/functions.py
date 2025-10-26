@@ -1,5 +1,6 @@
 import os
 import re
+import shutil
 import stat
 from datetime import datetime
 
@@ -9,7 +10,7 @@ from src.utilities import utilities
 
 def resolve_file_path(file: str, path: str) -> str:
     """
-    Преобразует path для команды cp без флага -r (для файлов) и mv.
+    Преобразует path для команд, создающих файлы.
 
     Проверяет является ли путь абсолютным:
     Если да, то в path добавляется имя файла.
@@ -39,7 +40,7 @@ def resolve_file_path(file: str, path: str) -> str:
             return os.path.join(os.getcwd(), path, file)
         else:
             raise src.exceptions.IsNotDirectory(
-                f'Нельзя скопировать файл в существующий файл {path}'
+                f'Нельзя создать файл в существующий файл {path}'
             )
     else:
         dir_path = os.sep.join(path.split(os.sep)[:-1])
@@ -76,7 +77,12 @@ def resolve_dir_path(file: str, path: str) -> str:
         else:
             raise src.exceptions.IsNotDirectory(f'{path} - не директория')
     else:
-        raise src.exceptions.PathError(f'Не существует указанного пути {path}')
+        dir_path = os.sep.join(path.split(os.sep)[:-1])
+        if not dir_path:
+            return path
+        dir_path = normalize_path(dir_path)
+        is_correct_directory(dir_path)
+        return path
 
 
 def normalize_path(path: str) -> str:
@@ -139,7 +145,7 @@ def is_correct_file(path: str) -> bool:
     raise src.exceptions.IsNotFile(f'{path} - не файл')
 
 
-def tokenize(stdin: str) -> tuple[str, list[str]]:
+def tokenize(stdin: str) -> tuple[str, str, list[str]]:
     """
     Токенизирует входную строку stdin.
 
@@ -154,9 +160,17 @@ def tokenize(stdin: str) -> tuple[str, list[str]]:
     PATTERN = re.compile(r"'.*'|\S+|[a-zA-Z]+|-[a-zA-Z]")
     tokens: list[str] = re.findall(PATTERN, stdin)
     command, *args = tokens
+    flag, paths = '', []
     if command not in utilities:
         raise src.exceptions.IncorrectCommand(f'Неизвестная команда {command}')
-    return (command, args)
+    if args:
+        if '-' in args[0]:
+            flag = args[0][1:]
+            paths = args[1:]
+        else:
+            flag = ''
+            paths = args
+    return (command, flag, paths)
 
 
 def output(path: str) -> None:
@@ -189,7 +203,8 @@ def detailed_output(path: str) -> None:
     """
     for file in sorted(os.listdir(path)):
         if not file.startswith('.'):
-            file_stat = os.stat(file)
+            file_path = os.path.join(path, file)
+            file_stat = os.stat(file_path)
             modes = stat.filemode(file_stat.st_mode)
             size = file_stat.st_size
             time_mode = datetime.fromtimestamp(int(file_stat.st_mtime))
@@ -211,3 +226,10 @@ def is_archive(path: str) -> bool:
         if path.endswith(exp):
             return True
     raise src.exceptions.IsNotArchive(f'{path} - не архив.')
+
+
+def cp_undo(file_type: str, dest_path: str) -> None:
+    if file_type == 'dir':
+        shutil.rmtree(dest_path)
+    else:
+        os.remove(dest_path)

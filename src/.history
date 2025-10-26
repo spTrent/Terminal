@@ -1,0 +1,146 @@
+1 stop
+2 stop
+3 cp uv.lock trash&ya
+4 rm trash&ya
+5 cp uv.lock &
+6 cat &
+7 rm &
+8 ls -lllllllllllll
+9 ls
+10 cp README.md .
+11 rm src/test
+12 undo
+13 stop
+14 rm test
+15 undo
+16 cd src
+17 ls
+18 rm test
+19 undo
+20 cd src
+21 rm test
+22 undo
+23 rm test
+24 undo
+25 rm test
+26 stop
+27 rm -r src/test
+28 rm src/test
+29 rm -r src/test
+30 stop
+31 rm -r src/test
+32 stop
+33 rm -r src/test
+34 ls
+35 ls
+36 ls
+37 ls -l
+38 ls src tests
+39 ls -l src tests
+40 ls tests
+41 ls -l tests
+42 ls tests
+43 ls -l tests
+44 ls tests
+45 ls -l tests
+46 ls tests
+47 ls -l tests
+48
+49 ls tests
+50 ls -l tests
+51
+52 ls tests
+53 ls -l tests
+54 stop
+55 ls
+56 cd ..
+57 cd ..
+58 ls
+59 cd Calculator
+60 ls
+61 mv a.txt z.txt
+62 cd ..
+63 ls
+64 cd Calculator
+65 ls
+66 mv a.txt z.txt
+67
+68 ls
+69 cd ..
+70 cd Calculator
+71 ls
+72 mv a.txt z.txt
+73
+74 ls
+75 cp src hui
+76 cd ../Calculator
+77 ls
+78 mv zalupa hui
+79 ls
+80 ls ..
+81 ls ~
+82 cat README.md
+83 cd ..
+84 ls
+85 cd Terminal
+86 ls
+87 cat README.md pyproject.toml
+88 cd ../Calculator
+89 ;s
+90 ls
+91 cp src hui
+92 cd ../Calculator
+93 ls
+94 cp src hui
+95 cp -r src hui
+96
+97 cd ../Calculator
+98 ls
+99 cp src penis
+100 cp -r src penis
+101 ls
+102 cp -r src penis/hui
+103 cp -r src jopa/hui
+104 ls
+105 mv zalupa jopa
+106 ls
+107 mv jopa penis
+108 ls
+109 cd penis
+110 ls
+111 mv README.tst idinahui
+112 ls
+113 mv idinahui jopa
+114 ls
+115 cd jopa
+116 ls
+117
+118 ls
+119 cd ../Calculator
+120 ls
+121 zip hui jopa
+122
+123 cd ../Calculator
+124 ls
+125 zip hui jopablya
+126 cd ../Calculator
+127 ls
+128 zip hui jopablya
+129 ls
+130 unzip jopablya.zip
+131 ls
+132 rm -r jopablya hui
+133 ls
+134 rm jopablya.zip
+135 ls
+136 tar src hui
+137 ls
+138 untar hui.tar.gz
+139 ls
+140 rm hui.tar.gz
+141 rm -r hui
+142 cd ..
+143 ls
+144 rm -r Calculator
+145 ls
+146
