@@ -1,10 +1,8 @@
 import os
 import re
-import stat
-from datetime import datetime
 
-import src.exceptions
-from src.utilities import utilities
+import src.config.consts
+import src.config.exceptions
 
 
 def resolve_file_path(file: str, path: str) -> str:
@@ -37,11 +35,13 @@ def resolve_file_path(file: str, path: str) -> str:
     elif os.path.exists(path) and os.path.isdir(path):
         return os.path.join(os.getcwd(), path, file)
     elif os.path.exists(path):
-        raise src.exceptions.IsNotDirectory(f'Файл {path} уже существует')
+        raise src.config.exceptions.IsNotDirectory(
+            f'Файл {path} уже существует'
+        )
     else:
         dir_path = os.sep.join(path.split(os.sep)[:-1])
         if not dir_path:
-            return path
+            return os.path.join(os.getcwd(), path)
         dir_path = normalize_path(dir_path)
         is_correct_directory(dir_path)
         return path
@@ -67,7 +67,9 @@ def normalize_path(path: str) -> str:
     elif os.path.exists(path):
         return os.path.join(os.getcwd(), path)
     else:
-        raise src.exceptions.PathError(f'Не существует указанного пути {path}')
+        raise src.config.exceptions.PathError(
+            f'Не существует указанного пути {path}'
+        )
 
 
 def is_correct_directory(path: str) -> bool:
@@ -86,7 +88,7 @@ def is_correct_directory(path: str) -> bool:
     """
     if os.path.isdir(path):
         return True
-    raise src.exceptions.IsNotDirectory(f'{path} - не директория')
+    raise src.config.exceptions.IsNotDirectory(f'{path} - не директория')
 
 
 def is_correct_file(path: str) -> bool:
@@ -104,10 +106,10 @@ def is_correct_file(path: str) -> bool:
     """
     if os.path.isfile(path):
         return True
-    raise src.exceptions.IsNotFile(f'{path} - не файл')
+    raise src.config.exceptions.IsNotFile(f'{path} - не файл')
 
 
-def tokenize(stdin: str) -> tuple[str, str, list[str]]:
+def tokenize(stdin: str) -> tuple[str, set, list[str]]:
     """
     Токенизирует входную строку stdin.
 
@@ -119,79 +121,29 @@ def tokenize(stdin: str) -> tuple[str, str, list[str]]:
     Returns:
         list(str, list(str)) - список вида [команда, ее аргументы]
     """
-    PATTERN = re.compile(r"'.*'|\S+|[a-zA-Z]+|-[a-zA-Z]")
+    PATTERN = re.compile(r"'.*'|\S+|[a-zA-Z]+|--[a-zA-Z-]*|-[a-zA-Z]*")
     tokens: list[str] = re.findall(PATTERN, stdin)
     command, *args = tokens
-    flag, paths = '', []
-    if command not in utilities:
-        raise src.exceptions.IncorrectCommand(f'Неизвестная команда {command}')
+    flags, paths = set(), []
+    if command not in src.config.consts.UTILITIES:
+        raise src.config.exceptions.IncorrectCommand(
+            f'Неизвестная команда {command}'
+        )
     if args:
-        if args[0].startswith('-'):
-            flag = args[0][1:]
+        if args[0].startswith('--'):
+            flags.add(args[0][2:])
+            paths = args[1:]
+        elif args[0].startswith('-'):
+            flags = set(args[0][1:])
             paths = args[1:]
         else:
-            flag = ''
+            flags = set()
             paths = args
-    return (command, flag, paths)
-
-
-def output(path: str) -> None:
-    """
-    Выводит файлы, расположенные в path, игнорируя скрытые.
-
-    Args:
-        path(str) - исходный путь.
-
-    Returns:
-        str - имена нескрытых файлов в path.
-    """
-    for file in os.listdir(path):
-        if not file.startswith('.'):
-            print(file, end=' ')
-    print()
-
-
-def detailed_output(path: str) -> None:
-    """
-    Выводит подробную информацию про файлы,
-    расположенные в path, игнорируя скрытые.
-    В формате: Имя Размер Время изменения Разрешения.
-
-    Args:
-        path(str) - исходный путь.
-
-    Returns:
-        str - информация про файлы, расположенные в path.
-    """
-    for file in sorted(os.listdir(path)):
-        if not file.startswith('.'):
-            file_path = os.path.join(path, file)
-            file_stat = os.stat(file_path)
-            modes = stat.filemode(file_stat.st_mode)
-            size = file_stat.st_size
-            time_mode = datetime.fromtimestamp(int(file_stat.st_mtime))
-            time_mode_f = time_mode.strftime('%b %d %H:%M')
-            print(f'{file} {size} {time_mode_f} {modes}')
-
-
-def is_archive(path: str) -> bool:
-    """
-    Проверяет, является ли path архивом.
-
-    Args:
-        path(str) - исходный путь к файлу.
-
-    Returns:
-        True, если архив. Исключение IsNotArchive, если не архив.
-    """
-    for exp in ['.zip', '.tar', '.tar.gz', '.tar.bz', '.tar.xz']:
-        if path.endswith(exp):
-            return True
-    raise src.exceptions.IsNotArchive(f'{path} - не архив.')
+    return (command, flags, paths)
 
 
 def is_correct_flag(flag: set, allowed_flags: set) -> bool:
     for f in flag:
         if f not in allowed_flags:
-            raise src.exceptions.IncorrectFlag(f'Неправильный флаг {f}')
+            raise src.config.exceptions.IncorrectFlag(f'Неправильный флаг {f}')
     return True

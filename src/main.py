@@ -1,36 +1,36 @@
 import os
 import shutil
 
-import src.exceptions
-import src.functions
-import src.logger
-import src.utilities
+import src.config.consts
+import src.config.exceptions
+import src.config.functions
+import src.config.logger
 
 
 def main() -> None:
-    with open(src.utilities.history_path, 'r') as f:
+    with open(src.config.consts.HISTORY_PATH, 'r') as f:
         history_lines = len(f.readlines())
     while 1:
         try:
             current_dir = os.getcwd().replace(os.path.expanduser('~'), '~')
             stdin = input(f'{current_dir}$ ')
-            with open(src.utilities.history_path, 'a') as f:
+            with open(src.config.consts.HISTORY_PATH, 'a') as f:
                 f.write(f'{history_lines + 1} {stdin}\n')
             history_lines += 1
-            src.logger.main_logger.info(stdin)
+            src.config.logger.main_logger.info(stdin)
             if not stdin or stdin == 'stop':
                 break
-            command, flag, paths = src.functions.tokenize(stdin)
+            command, flags, paths = src.config.functions.tokenize(stdin)
             if command in ['zip', 'tar', 'unzip', 'untar']:
-                src.utilities.utilities[command](command, flag, paths)
+                src.config.consts.UTILITIES[command](command, flags, paths)
             else:
-                src.utilities.utilities[command](flag, paths)
-            src.logger.main_logger.info('Success')
+                src.config.consts.UTILITIES[command](flags, paths)
+            src.config.logger.main_logger.info('Success')
 
-        except src.exceptions.TerminalException as message:
+        except src.config.exceptions.TerminalException as message:
             print(f'{type(message).__name__}: {message}')
-            src.logger.main_logger.error(message)
-    shutil.rmtree(src.utilities.trash_path)
+            src.config.logger.main_logger.error(message)
+    shutil.rmtree(src.config.consts.TRASH_PATH)
 
 
 if __name__ == '__main__':
