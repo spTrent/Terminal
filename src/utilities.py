@@ -8,6 +8,8 @@ import src.functions
 for_undo_history: list[list] = []
 history_path: str = os.path.join(os.getcwd(), 'src/.history')
 trash_path: str = os.path.join(os.getcwd(), 'src/.trash')
+if os.path.exists(trash_path):
+    shutil.rmtree(trash_path)
 os.mkdir(trash_path)
 
 
@@ -181,10 +183,8 @@ def rm(flag: str, paths: list[str]) -> None:
                     shutil.rmtree(file)
             else:
                 src.functions.is_correct_file(file)
-                approve = input(f'Удалить {file}? [y / n]')
-                if approve.lower() == 'y':
-                    cp('', [file, file_trash])
-                    os.remove(file)
+                cp('', [file, file_trash])
+                os.remove(file)
             removed.append((file, file_trash))
         except PermissionError:
             print(f'Ошибка: нет прав на удаление {file}')
@@ -285,7 +285,10 @@ def undo(flag: str, paths: list) -> None:
     print(f'команда: {command}, флаг: {flag}, путь: {paths}')
     if command == 'cp':
         dest_path = src.functions.normalize_path(paths[-1])
-        rm(flag, [dest_path])
+        if flag == 'r':
+            shutil.rmtree(dest_path)
+        else:
+            os.remove(dest_path)
     else:
         for file_path, dest_path in paths:
             mv('', [dest_path, file_path])
