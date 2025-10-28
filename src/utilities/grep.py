@@ -17,12 +17,23 @@ def find_all_files(path: str, files: list | None = None) -> list[str]:
 
 
 def find_in_file(path: str, pattern: str, flags: set) -> None:
-    pattern = pattern[1:-1]
     flag = re.IGNORECASE if ('i' in flags or 'ignore-case' in flags) else 0
+    pattern = pattern[1:-1]
+    try:
+        re.compile(pattern, flag)
+        reg = True
+    except re.error:
+        if 'i' in flags or 'ignore-case' in flags:
+            pattern = pattern.lower()
+        reg = False
     try:
         with open(path, 'r') as f:
             for n, row in enumerate(f.readlines(), start=1):
-                if pattern and re.search(pattern, row, flag):
+                if pattern and reg and re.search(pattern, row, flag):
+                    print(f'{path}: {n} {row}', end='')
+                if pattern and not reg:
+                    if 'i' in flags or 'ignore-case' in flags:
+                        row = row.lower()
                     print(f'{path}: {n} {row}', end='')
     except UnicodeDecodeError:
         pass

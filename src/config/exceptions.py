@@ -58,3 +58,10 @@ class NothingToUndo(TerminalException):
 
     def __init__(self, message: str) -> None:
         super().__init__(message)
+
+
+class AlreadyExists(TerminalException):
+    """Исключение создания файла с существующим именем"""
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message)

@@ -7,6 +7,16 @@ import src.config.functions
 from src.utilities.cp import cp
 
 
+def is_trash_empty(file_name: str) -> None:
+    trash_file = os.path.join(src.config.consts.TRASH_PATH, file_name)
+    if os.path.exists(trash_file) and os.path.isfile(trash_file):
+        os.remove(trash_file)
+    elif os.path.exists(trash_file):
+        shutil.rmtree(trash_file)
+    else:
+        pass
+
+
 def rm(flags: set, paths: list[str]) -> None:
     """
     Удаляет файлы(директории) указанные в paths.
@@ -38,10 +48,12 @@ def rm(flags: set, paths: list[str]) -> None:
                     )
                 approve = input(f'Удалить {file}? [y / n]')
                 if approve.lower() == 'y':
+                    is_trash_empty(file_trash)
                     cp({'r'}, [file, file_trash])
                     shutil.rmtree(file)
             else:
                 src.config.functions.is_correct_file(file)
+                is_trash_empty(file_trash)
                 cp(set(), [file, file_trash])
                 os.remove(file)
             removed.append((file, file_trash))

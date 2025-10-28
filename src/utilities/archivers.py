@@ -27,7 +27,7 @@ def make_archive(command: str, flags: str, paths: list[str]) -> None:
     в архив с именем args[1].
 
     Если command это zip, то формат .zip.
-    Если command это tar, то формат .zip.gz
+    Если command это tar, то формат .tar.gz
 
     Args:
         - command - формат сжатия.

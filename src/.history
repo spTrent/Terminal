@@ -234,3 +234,108 @@
 234 grep '\*\*.*\*\*' README.md zapula
 235 grep -i 'ide' README.md zapula
 236
+237 cd ..
+238 ls
+239 cp -r hui zalupa
+240 ls
+241 undo
+242 ls
+243
+244 cd ..
+245 ls
+246 rm -r hui
+247 ls
+248 unzip C.zip hui
+249 zip zapula hui
+250 zip C hui
+251 unzip hui.zip
+252 ls
+253 undo
+254 ls
+255 cd hui
+256 ls
+257 cd ..
+258 cd ..
+259 ls
+260 rm -r zalupa penis hui
+261 ls
+262 mkdir penis
+263 ls
+264 undo
+265 ls
+266 rm -r hui penis zalupa
+267 ls
+268 rm zaplupa
+269 rm -r zaplupa
+270 ls
+271 touch a.txt b.txt c.txt
+272 ls
+273 rm b.txt a.txt c.txt
+274 ls
+275 touch a.txt
+276 ls
+277 undo
+278 ls
+279 rm b.txt a.txt
+280 ls
+281 undo
+282 ls
+283 rm a.txt b.txt
+284 touch a.txt
+285 ls
+286 undo
+287 ls
+288
+289 cd ..
+290 ls
+291 touch a.txt b.txt c.txt
+292 ls
+293 ls
+294 touch b.txt c.txt
+295 ls
+296 rm a.txt b.txt c.txt
+297 ls
+298 touch b.txt
+299 ls
+300 undo
+301 ls
+302
+303 cd ..
+304 ls
+305 rm a.txt b.txt c.txt
+306 touch b.txt
+307 ls
+308 undo
+309
+258 ls
+259 grep * README.md
+260
+313 cd ..
+314 ls
+315 grep * README.md
+316 grep '*' README.md
+317
+318 cd ..
+319 grep 'П' README.md
+320 grep 'П*' README.md
+321
+322 cd ..
+323 ls
+324 grep 'П' README.md
+325 grep 'П*' README.md
+326 grep 'П+' README.md
+327 grep -i 'П+' README.md
+328 cd ..
+329 ls
+330 grep -i 'П+' README.md
+331 cd ..
+332 ls
+333 grep -i 'П+' README.md
+334 cd ..
+335 ls
+336 grep -i 'П+' README.md
+337 grep 'команду' README.md
+338 cd ..
+339 grep 'команду' README.md
+340 grep -i 'П' README.md
+341

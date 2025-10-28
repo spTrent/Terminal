@@ -43,4 +43,7 @@ def mv(flags: str, paths: list[str]) -> None:
             moved.append((file, dest_path))
         except PermissionError:
             print('Ошибка: Недостаточно прав')
+        except src.config.exceptions.AlreadyExists:
+            file_name = file.split(os.sep)[-1]
+            print(f'{file_name} уже существует, пропущен')
     src.config.consts.FOR_UNDO_HISTORY.append(['mv', flags, moved])

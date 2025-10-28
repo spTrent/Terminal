@@ -35,7 +35,7 @@ def resolve_file_path(file: str, path: str) -> str:
     elif os.path.exists(path) and os.path.isdir(path):
         return os.path.join(os.getcwd(), path, file)
     elif os.path.exists(path):
-        raise src.config.exceptions.IsNotDirectory(
+        raise src.config.exceptions.AlreadyExists(
             f'Файл {path} уже существует'
         )
     else:

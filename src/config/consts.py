@@ -10,8 +10,10 @@ from src.utilities import (
     grep,
     history,
     ls,
+    mkdir,
     mv,
     rm,
+    touch,
     undo,
 )
 
@@ -36,4 +38,6 @@ UTILITIES: dict[str, Callable] = {
     'unzip': archivers.unpack,
     'untar': archivers.unpack,
     'grep': grep.grep,
+    'touch': touch.touch,
+    'mkdir': mkdir.mkdir,
 }
