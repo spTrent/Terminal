@@ -51,14 +51,13 @@ def make_archive(command: str, flags: set, paths: list[str]) -> None:
         raise src.config.exceptions.IncorrectFlag(
             f'Для {command} не поддерживаются флаги'
         )
-    if len(paths) != 2:
+    if len(paths) > 2:
         raise src.config.exceptions.IncorrectInput(
             f'Неверное количество аргументов для {command}'
         )
     dir_path = src.config.functions.normalize_path(paths[0])
     src.config.functions.is_correct_directory(dir_path)
-    dir_name = dir_path.split(os.sep)[-1]
-    dest_path = src.config.functions.resolve_file_path(dir_name, paths[1])
+    dest_path = paths[-1]
     if command == 'zip':
         shutil.make_archive(dest_path, 'zip', dir_path)
     else:
