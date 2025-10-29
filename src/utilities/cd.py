@@ -34,6 +34,7 @@ def cd(flags: set, paths: list[str]) -> None:
         raise src.config.exceptions.IncorrectInput(
             'Слишком много аргументов для cd'
         )
+    paths = paths if paths else ['~']
     path = src.config.functions.normalize_path(paths[0])
     src.config.functions.is_correct_directory(path)
     os.chdir(path)
