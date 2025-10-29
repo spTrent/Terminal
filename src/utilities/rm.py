@@ -4,6 +4,7 @@ import shutil
 import src.config.consts
 import src.config.exceptions
 import src.config.functions
+import src.config.logger
 from src.utilities.cp import cp
 
 
@@ -42,7 +43,12 @@ def rm(flags: set, paths: list[str]) -> None:
         try:
             if flags:
                 src.config.functions.is_correct_directory(file)
-                if file in os.getcwd():
+                if os.path.samefile(
+                    file, os.getcwd()
+                ) or os.getcwd().startswith(file):
+                    src.config.logger.main_logger.error(
+                        f'{file_name} пропущен: недостаточно прав'
+                    )
                     raise src.config.exceptions.TerminalException(
                         f'Ошибка: нет прав на удаление {file}'
                     )
@@ -58,5 +64,9 @@ def rm(flags: set, paths: list[str]) -> None:
                 os.remove(file)
             removed.append((file, file_trash))
         except PermissionError:
-            print(f'Ошибка: нет прав на удаление {file}')
-    src.config.consts.FOR_UNDO_HISTORY.append(['rm', flags, removed])
+            print(f'Ошибка: нет прав на удаление {file_name}')
+            src.config.logger.main_logger.error(
+                f'{file_name} пропущен: недостаточно прав'
+            )
+    if removed:
+        src.config.consts.FOR_UNDO_HISTORY.append(['rm', flags, removed])

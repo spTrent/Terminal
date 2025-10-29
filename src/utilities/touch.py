@@ -2,6 +2,7 @@ import os
 
 import src.config.exceptions
 import src.config.functions
+import src.config.logger
 
 
 def touch(flag: set, paths: list) -> None:
@@ -10,7 +11,11 @@ def touch(flag: set, paths: list) -> None:
             'Для touch не поддерживаются флаги'
         )
     for file in paths:
-        if os.path.exists(file):
-            print(f'{file} уже существует')
-        with open(file, 'w'):
-            pass
+        if not os.path.exists(file):
+            with open(file, 'w'):
+                pass
+        else:
+            print(f'{file} пропущен: уже существует')
+            src.config.logger.main_logger.error(
+                f'{file} пропущен: уже существует'
+            )

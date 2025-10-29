@@ -12,4 +12,5 @@ def mkdir(flag: set, paths: list) -> None:
     for file in paths:
         if os.path.exists(file):
             print(f'{file} уже существует')
+            continue
         os.mkdir(file)

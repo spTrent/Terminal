@@ -1,5 +1,5 @@
 import os
-import re
+import shlex
 
 import src.config.consts
 import src.config.exceptions
@@ -121,8 +121,9 @@ def tokenize(stdin: str) -> tuple[str, set, list[str]]:
     Returns:
         list(str, list(str)) - список вида [команда, ее аргументы]
     """
-    PATTERN = re.compile(r"'.*'|\S+|[a-zA-Z]+|--[a-zA-Z-]*|-[a-zA-Z]*")
-    tokens: list[str] = re.findall(PATTERN, stdin)
+    # PATTERN = re.compile(r"'.*'|\S+|[a-zA-Z]+|--[a-zA-Z-]*|-[a-zA-Z]*")
+    # tokens: list[str] = re.findall(PATTERN, stdin)
+    tokens = shlex.split(stdin)
     command, *args = tokens
     flags, paths = set(), []
     if command not in src.config.consts.UTILITIES:

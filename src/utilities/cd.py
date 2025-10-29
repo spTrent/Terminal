@@ -4,7 +4,7 @@ import src.config.exceptions
 import src.config.functions
 
 
-def cd(flags: str, paths: list[str]) -> None:
+def cd(flags: set, paths: list[str]) -> None:
     """
     Перемещает рабочую директорию.
 

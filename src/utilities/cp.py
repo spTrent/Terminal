@@ -4,6 +4,7 @@ import shutil
 import src.config.consts
 import src.config.exceptions
 import src.config.functions
+import src.config.logger
 
 
 def cp(flags: set, paths: list[str]) -> None:
@@ -37,3 +38,6 @@ def cp(flags: set, paths: list[str]) -> None:
         )
     except PermissionError:
         print('Ошибка: Недостаточно прав')
+        src.config.logger.main_logger.error(
+            f'{file_name} пропущен: недостаточно прав'
+        )

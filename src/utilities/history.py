@@ -2,7 +2,7 @@ import src.config.consts
 import src.config.exceptions
 
 
-def history(flags: str, paths: list) -> None:
+def history(flags: set, paths: list) -> None:
     if flags:
         raise src.config.exceptions.IncorrectFlag(
             'Для history не поддерживаются флаги'

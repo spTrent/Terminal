@@ -1,8 +1,9 @@
 import src.config.exceptions
 import src.config.functions
+import src.config.logger
 
 
-def cat(flags: str, paths: list[str]) -> None:
+def cat(flags: set, paths: list[str]) -> None:
     """
     Выводит содержимое файлов, указанных в path.
 
@@ -27,3 +28,4 @@ def cat(flags: str, paths: list[str]) -> None:
                 print(f.read())
         except UnicodeDecodeError:
             print(f'{file} невозможно прочитать')
+            src.config.logger.main_logger.info(f'{file} невозможно прочитать')

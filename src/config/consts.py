@@ -18,8 +18,11 @@ from src.utilities import (
 )
 
 FOR_UNDO_HISTORY: list[list] = []
-HISTORY_PATH: str = os.path.join(os.getcwd(), 'src/.history')
-TRASH_PATH: str = os.path.join(os.getcwd(), 'src/.trash')
+HISTORY_PATH: str = os.path.join(os.path.expanduser('~'), '.history')
+if not os.path.exists(HISTORY_PATH):
+    touch.touch(set(), [HISTORY_PATH])
+
+TRASH_PATH: str = os.path.join(os.path.expanduser('~'), '.trash')
 if os.path.exists(TRASH_PATH):
     shutil.rmtree(TRASH_PATH)
 os.mkdir(TRASH_PATH)

@@ -3,17 +3,23 @@ import shutil
 
 import src.config.exceptions
 import src.config.functions
+import src.config.logger
 
 
 def is_archive(path: str) -> bool:
     """
-    Проверяет, является ли path архивом.
+    Проверяет, является ли файл архивом поддерживаемого формата.
+
+    Поддерживаемые форматы: .zip, .tar, .tar.gz, .tar.bz, .tar.xz
 
     Args:
-        path(str) - исходный путь к файлу.
+        path: Путь к файлу для проверки.
 
     Returns:
-        True, если архив. Исключение IsNotArchive, если не архив.
+        True, если файл является архивом.
+
+    Raises:
+        IsNotArchive: Если файл не является архивом поддерживаемого формата.
     """
     for exp in ['.zip', '.tar', '.tar.gz', '.tar.bz', '.tar.xz']:
         if path.endswith(exp):
@@ -21,21 +27,24 @@ def is_archive(path: str) -> bool:
     raise src.config.exceptions.IsNotArchive(f'{path} - не архив.')
 
 
-def make_archive(command: str, flags: str, paths: list[str]) -> None:
+def make_archive(command: str, flags: set, paths: list[str]) -> None:
     """
-    Создает архив из директории, указанной в args[0]
-    в архив с именем args[1].
+    Создаёт архив из указанной директории.
 
-    Если command это zip, то формат .zip.
-    Если command это tar, то формат .tar.gz
+    Формат архива зависит от команды: 'zip' создаёт .zip, 'tar' создаёт .tar.gz
 
     Args:
-        - command - формат сжатия.
-        - flags - флаг. Должен быть пустым для этой утилиты.
-        - paths - пути к архивируемой директории и архиву. Должно быть 2.
+        command: Формат архива ('zip' или 'tar').
+        flags: Флаг команды. Должен быть пустым.
+        paths: Список из двух элементов [путь_к_директории, имя_архива].
 
     Returns:
         None
+
+    Raises:
+        IncorrectFlag: Если указаны флаги.
+        IncorrectInput: Если количество путей не равно 2.
+        IsNotDirectory: Если исходный путь не является директорией.
     """
     if flags:
         raise src.config.exceptions.IncorrectFlag(
@@ -55,20 +64,22 @@ def make_archive(command: str, flags: str, paths: list[str]) -> None:
         shutil.make_archive(dest_path, 'gztar', dir_path)
 
 
-def unpack(command: str, flags: str, paths: list[str]) -> None:
+def unpack(command: str, flags: set, paths: list[str]) -> None:
     """
-    Распаковывает архив, указанный в paths[0].
-
-    Проверяет, является ли файл архивом.
-    Если да, то распаковывает.
-    Если нет, то бросает исключение IsNotArchiveю.
+    Распаковывает архив в текущую рабочую директорию, сохраняя имя.
 
     Args:
-        - flags - флаг. Должен быть пустым для этой утилиты.
-        - paths - путь к архиву. Должен быть 1.
+        command: Команда распаковки ('unzip' или 'untar').
+        flags: Флаг команды. Должен быть пустым.
+        paths: Список из одного элемента [путь_к_архиву].
 
     Returns:
         None
+
+    Raises:
+        IncorrectFlag: Если указаны флаги.
+        IncorrectInput: Если количество путей не равно 1.
+        IsNotArchive: Если файл не является архивом.
     """
     if flags:
         raise src.config.exceptions.IncorrectFlag(
@@ -83,4 +94,10 @@ def unpack(command: str, flags: str, paths: list[str]) -> None:
     file_name = file.split('.')[0]
     is_archive(file_path)
     unzip_dest = os.path.join(os.getcwd(), file_name)
-    shutil.unpack_archive(file_path, unzip_dest)
+    if not os.path.exists(unzip_dest):
+        shutil.unpack_archive(file_path, unzip_dest)
+    else:
+        print(f'{file_name} пропущен: уже существует')
+        src.config.logger.main_logger.error(
+            f'{file_name} пропущен: уже существует'
+        )

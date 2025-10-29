@@ -7,7 +7,7 @@ import src.config.functions
 from src.utilities.mv import mv
 
 
-def undo(flags: str, paths: list) -> None:
+def undo(flags: set, paths: list) -> None:
     if flags:
         raise src.config.exceptions.IncorrectFlag(
             'Для undo не поддерживаются флаги'
@@ -27,4 +27,4 @@ def undo(flags: str, paths: list) -> None:
             os.remove(dest_path)
     else:
         for file_path, dest_path in paths:
-            mv('', [dest_path, file_path])
+            mv(set(), [dest_path, file_path])
