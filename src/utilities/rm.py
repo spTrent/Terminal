@@ -5,7 +5,6 @@ import src.config.consts
 import src.config.exceptions
 import src.config.functions
 import src.config.logger
-from src.utilities.cp import cp
 
 
 def is_trash_empty(file_name: str) -> None:
@@ -77,12 +76,12 @@ def rm(flags: set, paths: list[str]) -> None:
                 approve = input(f'Удалить {file}? [y / n]')
                 if approve.lower() == 'y':
                     is_trash_empty(file_trash)
-                    cp({'r'}, [file, file_trash])
+                    shutil.copytree(file, file_trash)
                     shutil.rmtree(file)
             else:
                 src.config.functions.is_correct_file(file)
                 is_trash_empty(file_trash)
-                cp(set(), [file, file_trash])
+                shutil.copy(file, file_trash)
                 os.remove(file)
             removed.append((file, file_trash))
         except PermissionError:

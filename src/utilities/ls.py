@@ -41,7 +41,7 @@ def detailed_output(path: str) -> None:
             size = file_stat.st_size
             time_mode = datetime.fromtimestamp(int(file_stat.st_mtime))
             time_mode_f = time_mode.strftime('%b %d %H:%M')
-            print(f'{file} {size} {time_mode_f} {modes}')
+            print(f'{file:15} {size:7} {time_mode_f:12} {modes:10}')
 
 
 def ls(flags: set, paths: list[str]) -> None:

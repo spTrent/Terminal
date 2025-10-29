@@ -4,7 +4,6 @@ import shutil
 import src.config.consts
 import src.config.exceptions
 import src.config.functions
-from src.utilities.mv import mv
 
 
 def undo(flags: set, paths: list) -> None:
@@ -33,7 +32,7 @@ def undo(flags: set, paths: list) -> None:
         )
     if len(src.config.consts.FOR_UNDO_HISTORY) == 0:
         raise src.config.exceptions.NothingToUndo('Нечего отменять')
-    command, flag, paths = src.config.consts.FOR_UNDO_HISTORY[-1]
+    command, flag, paths = src.config.consts.FOR_UNDO_HISTORY.pop()
     if command == 'cp':
         dest_path = src.config.functions.normalize_path(paths[-1])
         if 'r' in flag or 'recursive' in flag:
@@ -42,4 +41,4 @@ def undo(flags: set, paths: list) -> None:
             os.remove(dest_path)
     else:
         for file_path, dest_path in paths:
-            mv(set(), [dest_path, file_path])
+            shutil.move(dest_path, file_path)
