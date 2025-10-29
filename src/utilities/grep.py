@@ -63,10 +63,29 @@ def find_in_file(path: str, pattern: str, flags: set) -> None:
                         print(f'{path}: {n} {row}', end='')
 
     except UnicodeDecodeError:
+        print(f'{path} невозможно прочитать')
         src.config.logger.main_logger.info(f'{path} невозможно прочитать')
 
 
 def grep(flags: set, paths: list) -> None:
+    """
+    Ищет паттерн в файлах.
+
+    Поддерживает рекурсивный поиск и поиск без учета регистра.
+
+    Args:
+        flags: множество флагов:
+            - 'r'/'recursive': рекурсивный поиск в поддиректориях
+            - 'i'/'ignore-case': поиск без учета регистра
+        paths: Список паттерн + пути для поиска
+
+    Prints:
+        строки, содержащие pattern с номерами
+
+    Raises:
+        IncorrectFlag: Если указан неверный флаг
+        PathError: Если указан несуществующий файл
+    """
     src.config.functions.is_correct_flag(
         flags, {'r', 'i', 'ignore-case', 'recursive'}
     )

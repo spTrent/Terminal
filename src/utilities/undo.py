@@ -8,6 +8,21 @@ from src.utilities.mv import mv
 
 
 def undo(flags: set, paths: list) -> None:
+    """
+    Отменяет последнюю операцию cp/mv/rm.
+
+    Args:
+        flags: Флаг утилиты. Должен быть пустым.
+        paths: Аргументы утилиты. Должны быть пустыми.
+
+    Returns:
+        None.
+
+    Raises:
+        IncorrectFlag: Если указаны флаги.
+        IncorrectInput: Если указаны аргументы.
+        NothingToUndo: Если нет операций для отмены.
+    """
     if flags:
         raise src.config.exceptions.IncorrectFlag(
             'Для undo не поддерживаются флаги'

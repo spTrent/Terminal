@@ -7,26 +7,21 @@ import src.config.exceptions
 
 def resolve_file_path(file: str, path: str) -> str:
     """
-    Преобразует path для команд, создающих файлы.
+    Преобразует путь назначения для утилит, которые создают файлы.
 
-    Проверяет является ли путь абсолютным:
-    Если да, то в path добавляется имя файла.
-    Если нет, то проверяет, не пытается ли пользователь
-    создать файл с существующим именем.
-
-    Если path не существует, значит пользователь
-    хочет создать файл с новым именем
-    (или в несуществующую папку (исключение)).
-
-    Проверяет path без file в конце на существование и корректность.
-    Если все правильно - возвращает path.
+    Определяет, является ли путь директорией или новым именем файла.
 
     Args:
-        file - имя копируемого файла.
-        path(str) - путь, куда нужно скопировать.
+        file: Имя создаваемого файла.
+        path: Путь назначения.
 
     Returns:
-        str - преобразованный path.
+        Путь к создаваемому файлу.
+
+    Raises:
+        AlreadyExists: Если создаваемый файл уже существует.
+        PathError: Если родительская директория не существует.
+        IsNotDirectory: Если родительская директория не директория.
     """
     path = path.rstrip(os.sep)
     path = path.replace('~', os.path.expanduser('~'))
@@ -49,17 +44,16 @@ def resolve_file_path(file: str, path: str) -> str:
 
 def normalize_path(path: str) -> str:
     """
-    Приводит путь path к абсолютному.
-
-    Проверяет, существует ли путь. Если да, то проверяет на абсолютность.
-    Если абсолютен, то оставляет. Если нет, то приводит к абсолютному.
-    Бросает исключение PathError, если путь не существует.
+    Приводит относительный путь к абсолютному и заменяет ~.
 
     Args:
-        path(str) - исходный путь
+        path: Исходный путь.
 
     Returns:
-        abs_path(str) -> абсолютный путь.
+        Абсолютный путь.
+
+    Raises:
+        PathError: Если путь не существует.
     """
     path = path.replace('~', os.path.expanduser('~'))
     if os.path.exists(path) and os.path.isabs(path):
@@ -74,17 +68,16 @@ def normalize_path(path: str) -> str:
 
 def is_correct_directory(path: str) -> bool:
     """
-    Приверяет директорию на корректность.
-
-    Считает, что на вход подается существующий путь.
-    Если директория - возвращает True.
-    Иначе - бросает исключение IsNotDirectory.
+    Проверяет, является ли путь директорией.
 
     Args:
-        path(str) - исходный путь.
+        path: Путь для проверки.
 
     Returns:
-        bool - ответ на вопрос: Это директория?
+        True, если путь является директорией.
+
+    Raises:
+        IsNotDirectory: Если путь не является директорией.
     """
     if os.path.isdir(path):
         return True
@@ -93,16 +86,16 @@ def is_correct_directory(path: str) -> bool:
 
 def is_correct_file(path: str) -> bool:
     """
-    Приверяет файл на корректность.
-
-    Считает, что на вход подается существующий путь.
-    Если файл - возвращает True. Иначе - бросает исключение IsNotFile.
+    Проверяет, является ли путь файлом.
 
     Args:
-        path(str) - исходный путь.
+        path: Путь для проверки.
 
     Returns:
-        bool - ответ на вопрос: Это файл?
+        True, если путь является файлом.
+
+    Raises:
+        IsNotFile: Если путь не является файлом.
     """
     if os.path.isfile(path):
         return True
@@ -111,18 +104,17 @@ def is_correct_file(path: str) -> bool:
 
 def tokenize(stdin: str) -> tuple[str, set, list[str]]:
     """
-    Токенизирует входную строку stdin.
-
-    Разбивает строку на имена файлов, флаги и команды. Игнорирует пробелы.
+    Разбирает входную строку на команду, флаги и аргументы.
 
     Args:
-        stdin(str) - исходная строка.
+        stdin: Строка от пользователя.
 
     Returns:
-        list(str, list(str)) - список вида [команда, ее аргументы]
+        Кортеж (команда, множество флагов, список путей).
+
+    Raises:
+        IncorrectCommand: Если введенная команда не поддерживается.
     """
-    # PATTERN = re.compile(r"'.*'|\S+|[a-zA-Z]+|--[a-zA-Z-]*|-[a-zA-Z]*")
-    # tokens: list[str] = re.findall(PATTERN, stdin)
     tokens = shlex.split(stdin)
     command, *args = tokens
     flags, paths = set(), []
@@ -144,6 +136,19 @@ def tokenize(stdin: str) -> tuple[str, set, list[str]]:
 
 
 def is_correct_flag(flag: set, allowed_flags: set) -> bool:
+    """
+    Проверяет корректность флагов команды.
+
+    Args:
+        flag: Множество флагов от пользователя.
+        allowed_flags: Множество разрешённых флагов для команды.
+
+    Returns:
+        True, если все флаги корректны.
+
+    Raises:
+        IncorrectFlag: Если хотя бы один флаг недопустим.
+    """
     for f in flag:
         if f not in allowed_flags:
             raise src.config.exceptions.IncorrectFlag(f'Неправильный флаг {f}')

@@ -3,6 +3,20 @@ import src.config.exceptions
 
 
 def history(flags: set, paths: list) -> None:
+    """
+    Выводит историю выполненных команд.
+
+    Args:
+        flags: Флаг утилиты. Должен быть пустым.
+        paths: Количество выводимых операций.
+
+    Prints:
+        Печатает историю вызова утилит.
+
+    Raises:
+        IncorrectFlag: Если указаны флаги.
+        IncorrectInput: Если количество аргументов больше 1.
+    """
     if flags:
         raise src.config.exceptions.IncorrectFlag(
             'Для history не поддерживаются флаги'

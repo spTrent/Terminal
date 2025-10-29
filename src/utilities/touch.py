@@ -6,6 +6,21 @@ import src.config.logger
 
 
 def touch(flag: set, paths: list) -> None:
+    """
+    Создаёт пустые файлы.
+
+    Если файл уже существует, выводит сообщение и пропускает.
+
+    Args:
+        flag: Флаг утилиты. Должен быть пустым.
+        paths: Список путей для создаваемых файлов.
+
+    Returns:
+        None.
+
+    Raises:
+        IncorrectFlag: Если указаны флаги.
+    """
     if flag:
         raise src.config.exceptions.IncorrectFlag(
             'Для touch не поддерживаются флаги'

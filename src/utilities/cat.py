@@ -5,14 +5,20 @@ import src.config.logger
 
 def cat(flags: set, paths: list[str]) -> None:
     """
-    Выводит содержимое файлов, указанных в path.
+    Выводит содержимое файлов.
 
     Args:
-        - flags - флаг. Должен быть пустым для этой утилиты.
-        - paths - пути к файлам. Должен быть хотя бы 1.
+        flags: Флаг утилиты. Должен быть пустым.
+        paths: Список путей. Должен содержать хотя бы один файл.
 
     Prints:
-        str - содержимое файлов.
+        Печатает содержимое файлов.
+
+    Raises:
+        IncorrectFlag: Если указан флаг.
+        IncorrectInput: Если список paths пуст.
+        PathError: Если указанный путь не существует.
+        IsNotFile: Если путь указывает на директорию.
     """
     if flags:
         raise src.config.exceptions.IncorrectFlag(

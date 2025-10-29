@@ -9,14 +9,22 @@ import src.config.logger
 
 def mv(flags: set, paths: list[str]) -> None:
     """
-    Перемещает(переименовывает) файлы paths[:-1] в paths[-1].
+    Перемещает или переименовывает файлы и директории.
 
     Args:
-        - flags - флаг. Должен быть пустым для этой утилиты.
-        - paths - пути к файлам. Должно быть хотя бы 2.
+        flags: Флаг утилиты. Должен быть пустым.
+        paths: Список из минимум 2 элементов:
+            - paths[:-1]: файлы/директории для перемещения.
+            - paths[-1]: директория назначения или новое имя.
 
     Returns:
-        None
+        None.
+
+    Raises:
+        IncorrectFlag: Если указан флаг.
+        IncorrectInput: Если указано меньше 2 путей.
+        PathError: Если исходный путь не существует.
+        AlreadyExists: Если целевой файл уже существует.
     """
     if flags:
         raise src.config.exceptions.IncorrectFlag(

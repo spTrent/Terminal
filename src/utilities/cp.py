@@ -9,14 +9,25 @@ import src.config.logger
 
 def cp(flags: set, paths: list[str]) -> None:
     """
-    Копирует содержимое файла(директории) paths[0] в указанный путь paths[1].
+    Копирует файлы и директории в указанное место.
 
     Args:
-        - flags - флаг. Пустой для файлов, 'r' для директорий.
-        - paths - пути копируемой и скопированной директорий. Должно быть 2.
+        flags: Множество флагов команды:
+            - 'r' или 'recursive': для копирования директорий.
+        paths: Список из двух элементов [источник, назначение]:
+            - paths[0]: путь к копируемому файлу/директории.
+            - paths[1]: путь назначения (директория или новое имя файла).
 
     Returns:
-        None
+        None.
+
+    Raises:
+        IncorrectFlag: Если указан неправильный флаг.
+        IncorrectInput: Если количество путей не равно 2.
+        PathError: Если исходный путь не существует.
+        IsNotFile: Если копируется файл с флагом r/recursive.
+        IsNotDirectory: Если копируется директория без флага r/recursive.
+        AlreadyExists: Если целевой файл уже существует.
     """
     src.config.functions.is_correct_flag(flags, {'r', 'recursive'})
     if len(paths) != 2:

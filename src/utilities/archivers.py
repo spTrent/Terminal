@@ -10,7 +10,7 @@ def is_archive(path: str) -> bool:
     """
     Проверяет, является ли файл архивом поддерживаемого формата.
 
-    Поддерживаемые форматы: .zip, .tar, .tar.gz, .tar.bz, .tar.xz
+    Поддерживаемые форматы: .zip, .tar, .tar.gz, .tar.bz, .tar.xz.
 
     Args:
         path: Путь к файлу для проверки.
@@ -35,7 +35,7 @@ def make_archive(command: str, flags: set, paths: list[str]) -> None:
 
     Args:
         command: Формат архива ('zip' или 'tar').
-        flags: Флаг команды. Должен быть пустым.
+        flags: Флаг утилиты. Должен быть пустым.
         paths: Список из двух элементов [путь_к_директории, имя_архива].
 
     Returns:
@@ -45,6 +45,7 @@ def make_archive(command: str, flags: set, paths: list[str]) -> None:
         IncorrectFlag: Если указаны флаги.
         IncorrectInput: Если количество путей не равно 2.
         IsNotDirectory: Если исходный путь не является директорией.
+        PathError: Если указан несуществующий файл.
     """
     if flags:
         raise src.config.exceptions.IncorrectFlag(
@@ -70,7 +71,7 @@ def unpack(command: str, flags: set, paths: list[str]) -> None:
 
     Args:
         command: Команда распаковки ('unzip' или 'untar').
-        flags: Флаг команды. Должен быть пустым.
+        flags: Флаг утилиты. Должен быть пустым.
         paths: Список из одного элемента [путь_к_архиву].
 
     Returns:
