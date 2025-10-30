@@ -3,7 +3,9 @@ name = "Terminal"
 version = "0.1.0"
 description = "Mini Terminal like bash for Laboratory job MAI"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "pytest-cov>=7.0.0",
+]
 
 [dependency-groups]
 dev = [

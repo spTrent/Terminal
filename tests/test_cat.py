@@ -49,7 +49,7 @@ class TestCatCommand:
         assert not captured.out
 
     def test_cat_multiline_file(self, capsys):
-        cat(set(), ['file1.txt'])
+        cat(set(), ['file2.txt'])
         captured = capsys.readouterr()
 
         assert 'Line 1\nLine 2\nLine 3' in captured.out
@@ -97,11 +97,11 @@ class TestCatCommand:
         with pytest.raises(src.config.exceptions.PathError):
             cat(set(), ['file1.txt', 'nonexistent.txt'])
 
-        assert 'Hello World' in captured
+            assert 'Hello World!' in captured.out
 
     def test_cat_file_and_dir(self, capsys):
         captured = capsys.readouterr()
         with pytest.raises(src.config.exceptions.IsNotFile):
             cat(set(), ['file1.txt', 'subdir'])
 
-        assert 'Hello World' in captured
+            assert 'Hello World!' in captured
