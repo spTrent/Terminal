@@ -90,13 +90,13 @@ class TestLsCommand:
         with pytest.raises(src.config.exceptions.IsNotDirectory):
             ls(set(), ['file1.txt'])
 
-    def test_ls_invalid_flag(self):
+    def test_ls_incorrect_flag(self):
         with pytest.raises(src.config.exceptions.IncorrectFlag):
             ls({'a'}, ['subdir'])
 
-    def test_ls_multiple_invalid_flags(self):
+    def test_ls_incorrect_flags(self):
         with pytest.raises(src.config.exceptions.IncorrectFlag):
-            ls({'a', 't', 'f'}, [])
+            ls({'l', 'a', 'f'}, [])
 
     def test_ls_with_tilde(self, capsys):
         ls(set(), ['~'])

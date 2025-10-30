@@ -31,7 +31,7 @@ def cp(flags: set, paths: list[str]) -> None:
     """
     src.config.functions.is_correct_flag(flags, {'r', 'recursive'})
     if len(paths) != 2:
-        src.config.exceptions.IncorrectInput(
+        raise src.config.exceptions.IncorrectInput(
             'Неверное количество путей для cp'
         )
     file_path = src.config.functions.normalize_path(paths[0])

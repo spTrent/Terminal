@@ -67,9 +67,6 @@ def rm(flags: set, paths: list[str]) -> None:
                 if os.path.samefile(
                     file, os.getcwd()
                 ) or os.getcwd().startswith(file):
-                    src.config.logger.main_logger.error(
-                        f'{file_name} пропущен: недостаточно прав'
-                    )
                     raise src.config.exceptions.TerminalException(
                         f'Ошибка: нет прав на удаление {file}'
                     )

@@ -5,6 +5,7 @@ import src.config.consts
 import src.config.exceptions
 import src.config.functions
 import src.config.logger
+import src.config.utilities
 
 
 def main() -> None:
@@ -23,9 +24,9 @@ def main() -> None:
                 break
             command, flags, paths = src.config.functions.tokenize(stdin)
             if command in ['zip', 'tar', 'unzip', 'untar']:
-                src.config.consts.UTILITIES[command](command, flags, paths)
+                src.config.utilities.UTILITIES[command](command, flags, paths)
             else:
-                src.config.consts.UTILITIES[command](flags, paths)
+                src.config.utilities.UTILITIES[command](flags, paths)
             src.config.logger.main_logger.info('Success')
 
         except src.config.exceptions.TerminalException as message:
