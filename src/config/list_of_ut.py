@@ -1,0 +1,17 @@
+UTILITIES = [
+    'ls',
+    'cd',
+    'cat',
+    'cp',
+    'mv',
+    'rm',
+    'history',
+    'undo',
+    'zip',
+    'tar',
+    'unzip',
+    'untar',
+    'grep',
+    'touch',
+    'mkdir',
+]

@@ -3,6 +3,7 @@ repos:
     rev: v1.18.2
     hooks:
       - id: mypy
+        exclude: tests/
         args: [--show-error-codes, --pretty]
         additional_dependencies:
           - types-requests

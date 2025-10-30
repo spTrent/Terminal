@@ -15,10 +15,11 @@ def output(path: str) -> None:
     Prints:
         Печатает имена файлов.
     """
-    for file in os.listdir(path):
-        if not file.startswith('.'):
-            print(file, end=' ')
-    print()
+    if os.listdir(path):
+        for file in os.listdir(path):
+            if not file.startswith('.'):
+                print(file, end=' ')
+        print()
 
 
 def detailed_output(path: str) -> None:
@@ -63,12 +64,13 @@ def ls(flags: set, paths: list[str]) -> None:
     """
     src.config.functions.is_correct_flag(flags, {'l'})
     paths = paths if paths else [os.getcwd()]
+    pointer = True if len(paths) > 1 else False
     for path in paths:
         path = src.config.functions.normalize_path(path)
         src.config.functions.is_correct_directory(path)
-        print(f'{path.split(os.sep)[-1]}: ')
+        if pointer:
+            print(f'{path.split(os.sep)[-1]}: ')
         if flags:
             detailed_output(path)
         else:
             output(path)
-        print()

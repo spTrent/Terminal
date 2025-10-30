@@ -1,8 +1,8 @@
 import os
 import shlex
 
-import src.config.consts
 import src.config.exceptions
+import src.config.list_of_ut
 
 
 def resolve_file_path(file: str, path: str) -> str:
@@ -118,7 +118,7 @@ def tokenize(stdin: str) -> tuple[str, set, list[str]]:
     tokens = shlex.split(stdin)
     command, *args = tokens
     flags, paths = set(), []
-    if command not in src.config.consts.UTILITIES:
+    if command not in src.config.list_of_ut.UTILITIES:
         raise src.config.exceptions.IncorrectCommand(
             f'Неизвестная команда {command}'
         )

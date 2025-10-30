@@ -35,6 +35,12 @@ python_version = '3.12'
 disallow_untyped_defs = true
 ignore_missing_imports = true
 strict_optional = true
+exclude = [
+    'tests/',
+    '.venv/',
+    'venv',
+    '__pycache__/'
+]
 
 [tool.pytest.ini_options]
 testpaths = ['tests']
