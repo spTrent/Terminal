@@ -8,6 +8,7 @@ import src.config.logger
 
 
 def main() -> None:
+    src.config.consts.init_env()
     with open(src.config.consts.HISTORY_PATH, 'r') as f:
         history_lines = len(f.readlines())
     while 1:

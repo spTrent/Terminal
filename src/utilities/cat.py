@@ -31,7 +31,7 @@ def cat(flags: set, paths: list[str]) -> None:
             path: str = src.config.functions.normalize_path(file)
             src.config.functions.is_correct_file(path)
             with open(path, 'r') as f:
-                print(f.read())
+                f.read().strip()
         except UnicodeDecodeError:
             print(f'{file} невозможно прочитать')
             src.config.logger.main_logger.info(f'{file} невозможно прочитать')
