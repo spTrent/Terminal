@@ -28,11 +28,12 @@ def resolve_file_path(file: str, path: str) -> str:
     if os.path.exists(path) and os.path.isabs(path) and os.path.isdir(path):
         return os.path.join(path, file)
     elif os.path.exists(path) and os.path.isdir(path):
-        return os.path.join(os.getcwd(), path, file)
+        path = os.path.join(os.getcwd(), path, file)
+        if os.path.exists(path) and os.path.isfile(path):
+            raise src.config.exceptions.AlreadyExists(f'{path} уже существует')
+        return path
     elif os.path.exists(path):
-        raise src.config.exceptions.AlreadyExists(
-            f'Файл {path} уже существует'
-        )
+        raise src.config.exceptions.AlreadyExists(f'{path} уже существует')
     else:
         dir_path = os.sep.join(path.split(os.sep)[:-1])
         if not dir_path:

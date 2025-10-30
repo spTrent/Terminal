@@ -2,6 +2,7 @@ import os
 
 import src.config.exceptions
 import src.config.functions
+import src.config.logger
 
 
 def cd(flags: set, paths: list[str]) -> None:
@@ -37,4 +38,8 @@ def cd(flags: set, paths: list[str]) -> None:
     paths = paths if paths else ['~']
     path = src.config.functions.normalize_path(paths[0])
     src.config.functions.is_correct_directory(path)
-    os.chdir(path)
+    try:
+        os.chdir(path)
+    except PermissionError:
+        print('Нет прав')
+        src.config.logger.main_logger.error('Нет прав')

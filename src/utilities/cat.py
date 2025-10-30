@@ -38,3 +38,6 @@ def cat(flags: set, paths: list[str]) -> None:
         except UnicodeDecodeError:
             print(f'{file} невозможно прочитать')
             src.config.logger.main_logger.info(f'{file} невозможно прочитать')
+        except PermissionError:
+            print(f'Нет прав на чтение {file}')
+            src.config.logger.main_logger.info(f'Нет прав на чтение {file}')

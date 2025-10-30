@@ -38,11 +38,11 @@ def mv(flags: set, paths: list[str]) -> None:
     dest_path = paths[-1]
     for file in paths[:-1]:
         try:
-            file = src.config.functions.normalize_path(file)
             file_name = file.split(os.sep)[-1]
             resolved_path = src.config.functions.resolve_file_path(
                 file_name, dest_path
             )
+            file = src.config.functions.normalize_path(file)
             shutil.move(file, resolved_path)
             moved.append((file, resolved_path))
         except PermissionError:
@@ -51,10 +51,10 @@ def mv(flags: set, paths: list[str]) -> None:
                 f'{file_name} пропущен: Недостаточно прав'
             )
 
-        except src.config.exceptions.AlreadyExists:
-            print(f'{file_name} уже существует, пропущен')
+        except src.config.exceptions.AlreadyExists as message:
+            print(f'{file_name} пропущен: {message}')
             src.config.logger.main_logger.error(
-                f'{file_name} пропущен: уже существует'
+                f'{file_name} пропущен: {message}'
             )
     if moved:
         src.config.consts.FOR_UNDO_HISTORY.append(['mv', flags, moved])

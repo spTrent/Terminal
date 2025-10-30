@@ -48,3 +48,10 @@ exclude = [
 [tool.pytest.ini_options]
 testpaths = ['tests']
 pythonpath = ['src/']
+
+[tool.coverage.run]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "*/__init__.py"
+]

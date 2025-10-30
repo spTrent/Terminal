@@ -40,11 +40,15 @@ def undo(flags: set, paths: list) -> None:
         else:
             os.remove(dest_path)
     else:
-        for file_path, dest_path in paths:
-            if os.path.exists(dest_path):
-                print(f'{dest_path} пропущен: уже существует')
-                src.config.logger.main_logger.error(
-                    f'{dest_path} пропущен: уже существует'
-                )
-            else:
-                shutil.move(dest_path, file_path)
+        try:
+            for file_path, dest_path in paths:
+                if os.path.exists(dest_path):
+                    print(f'{dest_path} пропущен: уже существует')
+                    src.config.logger.main_logger.error(
+                        f'{dest_path} пропущен: уже существует'
+                    )
+                else:
+                    shutil.move(dest_path, file_path)
+        except src.config.exceptions.PathError:
+            print(f'{file_path} удален')
+            src.config.logger.main_logger.error(f'{file_path} удален')

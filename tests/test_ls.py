@@ -62,6 +62,43 @@ class TestLsCommand:
             for i in 'Jan Feb Mar Apr May Jun' + ' Jul Aug Sep Oct Nov Dec'
         )
 
+    def test_ls_with_a_flag(self, capsys):
+        ls({'a'}, [])
+        captured = capsys.readouterr()
+
+        assert '.hidden_file' in captured.out
+        assert 'file1.txt' in captured.out
+        assert 'file2.py' in captured.out
+        assert 'subdir' in captured.out
+
+    def test_ls_with_all_flag(self, capsys):
+        ls({'all'}, [])
+        captured = capsys.readouterr()
+
+        assert '.hidden_file' in captured.out
+        assert 'file1.txt' in captured.out
+        assert 'file2.py' in captured.out
+        assert 'subdir' in captured.out
+
+    def test_ls_a_flag_with_path(self, capsys):
+        Path(self.test_dir, 'subdir', '.secret').touch()
+
+        ls({'a'}, ['subdir'])
+        captured = capsys.readouterr()
+
+        assert '.secret' in captured.out
+        assert 'nested.txt' in captured.out
+
+    def test_ls_all_flag_with_path(self, capsys):
+        Path(self.test_dir, 'subdir', '.secret').touch()
+
+        ls({'all'}, ['subdir'])
+        captured = capsys.readouterr()
+
+        assert '.secret' in captured.out
+        assert 'nested.txt' in captured.out
+
+
     def test_ls_l_shows_file_size_relative(self, capsys):
         test_file = Path(self.test_dir, 'subdir', 'nested.txt')
         test_file.write_text('Hello World!')
@@ -72,6 +109,7 @@ class TestLsCommand:
         assert 'nested.txt' in captured.out
         assert any(i in captured.out for i in '123456789')
 
+
     def test_ls_l_shows_file_size_abs(self, capsys):
         test_file = Path(self.test_dir, 'subdir', 'nested.txt')
         test_file.write_text('Hello World!')
@@ -80,6 +118,47 @@ class TestLsCommand:
         captured = capsys.readouterr()
 
         assert 'nested.txt' in captured.out
+        assert any(i in captured.out for i in '123456789')
+
+
+    def test_ls_with_l_and_a_flags(self, capsys):
+        ls({'l', 'a'}, [])
+        captured = capsys.readouterr()
+
+        assert '.hidden_file' in captured.out
+        assert 'rw' in captured.out or 'rwx' in captured.out
+        assert any(i in captured.out for i in '123456789')
+
+    def test_ls_with_l_and_all_flags(self, capsys):
+        ls({'l', 'all'}, [])
+        captured = capsys.readouterr()
+
+        assert '.hidden_file' in captured.out
+        assert 'rw' in captured.out or 'rwx' in captured.out
+        assert any(i in captured.out for i in '123456789')
+
+    def test_ls_with_l_and_a_flags_on_paths(self, capsys):
+        subdir2 = os.path.join(self.test_dir, 'sub_dir2')
+        os.mkdir(subdir2)
+        Path(subdir2, '.file3.txt').write_text('Hello')
+        ls({'l', 'a'}, ['subdir', subdir2])
+        captured = capsys.readouterr()
+
+        assert 'nested.txt' in captured.out
+        assert '.file3.txt' in captured.out
+        assert 'rw' in captured.out or 'rwx' in captured.out
+        assert any(i in captured.out for i in '123456789')
+
+    def test_ls_with_l_and_all_flags_on_path(self, capsys):
+        subdir2 = os.path.join(self.test_dir, 'sub_dir2')
+        os.mkdir(subdir2)
+        Path(subdir2, '.file3.txt').write_text('Hello')
+        ls({'l', 'all'}, ['subdir', subdir2])
+        captured = capsys.readouterr()
+
+        assert 'nested.txt' in captured.out
+        assert '.file3.txt' in captured.out
+        assert 'rw' in captured.out or 'rwx' in captured.out
         assert any(i in captured.out for i in '123456789')
 
     def test_ls_nonexists_path(self):
@@ -92,7 +171,7 @@ class TestLsCommand:
 
     def test_ls_incorrect_flag(self):
         with pytest.raises(src.config.exceptions.IncorrectFlag):
-            ls({'a'}, ['subdir'])
+            ls({'x'}, ['subdir'])
 
     def test_ls_incorrect_flags(self):
         with pytest.raises(src.config.exceptions.IncorrectFlag):
@@ -101,7 +180,16 @@ class TestLsCommand:
     def test_ls_with_tilde(self, capsys):
         ls(set(), ['~'])
         captured = capsys.readouterr()
-        assert 'Terminal' in captured.out
+        assert len(captured.out.strip()) > 0
+
+    def equal_a_and_all(self, capsys):
+        ls({'a'}, ['~'])
+        captured_a = capsys.readouterr()
+
+        ls({'all'}, ['~'])
+        captured_all = capsys.readouterr()
+
+        assert captured_a.out == captured_all.out
 
     def test_ls_with_parent_directory(self, capsys):
         subdir = os.path.join(self.test_dir, 'subdir')
@@ -123,6 +211,43 @@ class TestLsCommand:
         os.mkdir(empty_dir)
 
         ls(set(), [empty_dir])
+        captured = capsys.readouterr()
+
+        assert not captured.out
+
+    def test_ls_empty_directory_flag_a(self, capsys):
+        empty_dir = os.path.join(self.test_dir, 'empty')
+        os.mkdir(empty_dir)
+
+        ls({'a'}, [empty_dir])
+        captured = capsys.readouterr()
+
+        assert not captured.out
+
+    def test_ls_empty_directory_flag_all(self, capsys):
+        empty_dir = os.path.join(self.test_dir, 'empty')
+        os.mkdir(empty_dir)
+
+        ls({'all'}, [empty_dir])
+        captured = capsys.readouterr()
+
+        assert not captured.out
+
+    def test_ls_empty_directory_flag_l(self, capsys):
+        empty_dir = os.path.join(self.test_dir, 'empty')
+        os.mkdir(empty_dir)
+
+        ls({'l'}, [empty_dir])
+        captured = capsys.readouterr()
+
+        assert not captured.out
+
+
+    def test_ls_empty_directory_flag_all_flag_l(self, capsys):
+        empty_dir = os.path.join(self.test_dir, 'empty')
+        os.mkdir(empty_dir)
+
+        ls({'l'}, [empty_dir])
         captured = capsys.readouterr()
 
         assert not captured.out

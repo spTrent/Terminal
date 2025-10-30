@@ -5,9 +5,9 @@ from datetime import datetime
 import src.config.functions
 
 
-def output(path: str) -> None:
+def output(flags: set, path: str) -> None:
     """
-    Выводит имена файлов в директории, игнорируя скрытые.
+    Выводит имена файлов в директории.
 
     Args:
         path: Путь к директории.
@@ -15,14 +15,19 @@ def output(path: str) -> None:
     Prints:
         Печатает имена файлов.
     """
+    pointer = False
+    if 'a' in flags or 'all' in flags:
+        pointer = True
     if os.listdir(path):
         for file in os.listdir(path):
-            if not file.startswith('.'):
+            if (not file.startswith('.')) or (
+                file.startswith('.') and pointer
+            ):
                 print(file, end=' ')
         print()
 
 
-def detailed_output(path: str) -> None:
+def detailed_output(flags: set, path: str) -> None:
     """
     Выводит подробную информацию о файлах в директории.
 
@@ -34,8 +39,11 @@ def detailed_output(path: str) -> None:
     Prints:
         Печатает подробную информацию о файлах.
     """
+    pointer = False
+    if 'a' in flags or 'all' in flags:
+        pointer = True
     for file in sorted(os.listdir(path)):
-        if not file.startswith('.'):
+        if (not file.startswith('.')) or (file.startswith('.') and pointer):
             file_path = os.path.join(path, file)
             file_stat = os.stat(file_path)
             modes = stat.filemode(file_stat.st_mode)
@@ -52,6 +60,7 @@ def ls(flags: set, paths: list[str]) -> None:
     Args:
         flags: множество флагов:
             - 'l': подробный вывод.
+            - 'a'/'all': вывод скрытых файлов.
         paths: Список путей к директориям. Если пустой, то используется текущая
 
     Prints:
@@ -62,7 +71,7 @@ def ls(flags: set, paths: list[str]) -> None:
         IsNotDirectory: Если путь не является директорией.
         PathError: Если указана несуществующая директория.
     """
-    src.config.functions.is_correct_flag(flags, {'l'})
+    src.config.functions.is_correct_flag(flags, {'l', 'a', 'all'})
     paths = paths if paths else [os.getcwd()]
     pointer = True if len(paths) > 1 else False
     for path in paths:
@@ -70,7 +79,7 @@ def ls(flags: set, paths: list[str]) -> None:
         src.config.functions.is_correct_directory(path)
         if pointer:
             print(f'{path.split(os.sep)[-1]}: ')
-        if flags:
-            detailed_output(path)
+        if 'l' in flags:
+            detailed_output(flags, path)
         else:
-            output(path)
+            output(flags, path)

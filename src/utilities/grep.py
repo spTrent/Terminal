@@ -65,6 +65,9 @@ def find_in_file(path: str, pattern: str, flags: set) -> None:
     except UnicodeDecodeError:
         print(f'{path} невозможно прочитать')
         src.config.logger.main_logger.info(f'{path} невозможно прочитать')
+    except PermissionError:
+        print(f'Нет прав на чтение {path}')
+        src.config.logger.main_logger.info(f'Нет прав на чтение {path}')
 
 
 def grep(flags: set, paths: list) -> None:

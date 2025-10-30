@@ -17,13 +17,13 @@ def is_trash_empty(file_name: str) -> None:
     Returns:
         None. Удаляет файл/директорию из корзины, если такая есть.
     """
+    if not os.path.exists(src.config.consts.TRASH_PATH):
+        os.mkdir(src.config.consts.TRASH_PATH)
     trash_file = os.path.join(src.config.consts.TRASH_PATH, file_name)
     if os.path.exists(trash_file) and os.path.isfile(trash_file):
         os.remove(trash_file)
     elif os.path.exists(trash_file):
         shutil.rmtree(trash_file)
-    else:
-        pass
 
 
 def rm(flags: set, paths: list[str]) -> None:

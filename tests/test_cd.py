@@ -105,3 +105,26 @@ class TestCdCommand:
         cd(set(), ['../subdir2'])
 
         assert os.getcwd() == os.path.join(self.test_dir, 'subdir2')
+
+    def test_cd_many_slashes(self):
+        cd(set(), ['subdir1///nested'])
+
+        assert os.getcwd() == os.path.join(self.test_dir, 'subdir1', 'nested')
+
+    def test_cd_dir_with_spaces(self):
+        dir_with_spaces = Path(self.test_dir, 'dir with spaces')
+        dir_with_spaces.mkdir()
+        cd(set(), ['dir with spaces'])
+
+        assert os.getcwd() == str(dir_with_spaces)
+
+    def test_cd_to_root(self):
+        cd(set(), ['/'])
+
+        assert os.getcwd() == os.path.abspath(os.sep)
+
+    def test_permission_denied(self, capsys):
+        cd(set(), ['/root'])
+        captured = capsys.readouterr()
+
+        assert 'Нет прав' in captured.out
