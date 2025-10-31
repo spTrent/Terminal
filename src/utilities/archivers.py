@@ -58,10 +58,16 @@ def make_archive(command: str, flags: set, paths: list[str]) -> None:
     dir_path = src.config.functions.normalize_path(paths[0])
     src.config.functions.is_correct_directory(dir_path)
     dest_path = paths[-1]
-    if command == 'zip':
-        shutil.make_archive(dest_path, 'zip', dir_path)
-    else:
-        shutil.make_archive(dest_path, 'gztar', dir_path)
+    try:
+        if command == 'zip':
+            shutil.make_archive(dest_path, 'zip', dir_path)
+        else:
+            shutil.make_archive(dest_path, 'gztar', dir_path)
+    except PermissionError:
+        print(f'Нет прав на архивирование {dir_path}')
+        src.config.logger.main_logger.error(
+            f'Нет прав на архивирование {dir_path}'
+        )
 
 
 def unpack(command: str, flags: set, paths: list[str]) -> None:
@@ -91,13 +97,21 @@ def unpack(command: str, flags: set, paths: list[str]) -> None:
         )
     file_path = src.config.functions.normalize_path(paths[0])
     file = file_path.split(os.sep)[-1]
-    file_name = file.split('.')[0]
-    is_archive(file_path)
+    file_name = file[:-4] if command == 'unzip' else file[:-7]
+    is_archive(file)
     unzip_dest = os.path.join(os.getcwd(), file_name)
-    if not os.path.exists(unzip_dest):
-        shutil.unpack_archive(file_path, unzip_dest)
-    else:
-        print(f'{file_name} пропущен: уже существует')
+    try:
+        if not os.path.exists(unzip_dest):
+            if command == 'unzip':
+                shutil.unpack_archive(file_path, unzip_dest)
+            else:
+                shutil.unpack_archive(file_path, unzip_dest, filter='data')
+        else:
+            raise src.config.exceptions.AlreadyExists(
+                f'{unzip_dest} уже существует'
+            )
+    except PermissionError:
+        print('Нет прав на распаковку в текущую директорию')
         src.config.logger.main_logger.error(
-            f'{file_name} пропущен: уже существует'
+            'Нет прав на распаковку в текущую директорию'
         )

@@ -154,7 +154,6 @@ class TestMvCommand:
         finally:
             Path(self.test_dir).chmod(original_mode)
 
-
     def test_mv_file_with_spaces_in_name(self):
         Path(self.test_dir, 'file with spaces.txt').write_text('Content')
         mv(set(), ['file with spaces.txt', 'renamed.txt'])

@@ -61,7 +61,7 @@ class TestMkdirCommand:
     def test_mkdir_partial_success(self, capsys):
         mkdir(set(), ['dir1', 'exist_dir', 'dir2'])
         captured = capsys.readouterr()
-        
+
         assert 'exist_dir пропущен: уже существует' in captured.out
         assert Path(self.test_dir, 'dir1').exists()
         assert Path(self.test_dir, 'dir1').is_dir()
@@ -85,7 +85,7 @@ class TestMkdirCommand:
     def test_mkdir_partial_success2(self, capsys):
         mkdir(set(), ['dir1', 'haha/dir2', 'dir3'])
         captured = capsys.readouterr()
-        
+
         assert 'haha/dir2 пропущен' in captured.out
         assert Path(self.test_dir, 'dir1').exists()
         assert Path(self.test_dir, 'dir1').is_dir()
@@ -104,7 +104,7 @@ class TestMkdirCommand:
     def test_mkdir_many_dirs(self):
         dirs = [f'dir_{i}' for i in range(50)]
         mkdir(set(), dirs)
-        
+
         assert all(Path(self.test_dir, dirname).exists() for dirname in dirs)
 
     def test_mkdir_with_parent_path(self):
@@ -127,7 +127,7 @@ class TestMkdirCommand:
         Path(self.test_dir, 'filename').touch()
         mkdir(set(), ['filename'])
         captured = capsys.readouterr()
-        
+
         assert 'filename пропущен: уже существует' in captured.out
 
     def test_mkdir_slash(self):
@@ -139,7 +139,7 @@ class TestMkdirCommand:
         Path(self.test_dir, 'exists').mkdir()
         mkdir(set(), ['exists', 'haha/test', 'success'])
         captured = capsys.readouterr()
-        
+
         assert 'exists пропущен: уже существует' in captured.out
         assert 'haha/test пропущен' in captured.out
         assert Path(self.test_dir, 'success').exists()
