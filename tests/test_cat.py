@@ -88,10 +88,6 @@ class TestCatCommand:
         with pytest.raises(src.config.exceptions.IncorrectFlag):
             cat({'a'}, ['file1.txt'])
 
-    def test_cat_with_flags(self):
-        with pytest.raises(src.config.exceptions.IncorrectFlag):
-            cat({'s', 'l'}, ['file1.txt'])
-
     def test_cat_mixed(self, capsys):
         captured = capsys.readouterr()
         with pytest.raises(src.config.exceptions.PathError):

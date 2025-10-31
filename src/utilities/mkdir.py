@@ -28,7 +28,13 @@ def mkdir(flag: set, paths: list) -> None:
     for file in paths:
         try:
             dest = src.config.functions.resolve_file_path('', file)
-            os.mkdir(dest)
+            if not os.path.exists(dest):
+                os.mkdir(dest)
+            else:
+                print(f'{file} пропущен: уже существует')
+                src.config.logger.main_logger.error(
+                    f'{file} пропущен: уже существует'
+                )
         except PermissionError:
             print(f'Нет прав на создание {file}')
             src.config.logger.main_logger.error(f'Нет прав на создание {file}')

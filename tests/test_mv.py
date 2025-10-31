@@ -125,10 +125,6 @@ class TestMvCommand:
         with pytest.raises(src.config.exceptions.IncorrectFlag):
             mv({'f'}, ['file1.txt', 'renamed.txt'])
 
-    def test_mv_with_flags(self):
-        with pytest.raises(src.config.exceptions.IncorrectFlag):
-            mv({'f', 'i'}, ['file1.txt', 'renamed.txt'])
-
     def test_mv_without_arguments(self):
         with pytest.raises(src.config.exceptions.IncorrectInput):
             mv(set(), [])

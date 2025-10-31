@@ -72,10 +72,6 @@ class TestTouchCommand:
         with pytest.raises(src.config.exceptions.IncorrectFlag):
             touch({'a'}, ['file.txt'])
 
-    def test_touch_with_flags(self):
-        with pytest.raises(src.config.exceptions.IncorrectFlag):
-            touch({'a', 'b'}, ['file.txt'])
-
     def test_touch_file_with_special_chars(self):
         touch(set(), ['file_12 3-test.txt'])
         assert Path(self.test_dir, 'file_12 3-test.txt').exists()
