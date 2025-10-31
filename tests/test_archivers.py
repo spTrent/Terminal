@@ -8,7 +8,6 @@ import pytest
 import src.config.exceptions
 from src.utilities.archivers import is_archive, make_archive, unpack
 
-
 class TestIsArchive:
     def test_is_archive_zip(self):
         assert is_archive('file.zip') is True
