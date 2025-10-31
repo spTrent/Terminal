@@ -36,3 +36,6 @@ def touch(flag: set, paths: list) -> None:
             src.config.logger.main_logger.error(
                 f'{file} пропущен: уже существует'
             )
+        except src.config.exceptions.PathError as msg:
+            print(f'{file} пропущен: {msg}')
+            src.config.logger.main_logger.error(f'{file} пропущен: {msg}')

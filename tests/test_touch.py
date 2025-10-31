@@ -56,7 +56,7 @@ class TestTouchCommand:
     def test_touch_partitial_success(self, capsys):
         touch(set(), ['file1.txt', 'existing.txt', 'file2.txt'])
         captured = capsys.readouterr()
-        
+
         assert 'existing.txt пропущен: уже существует' in captured.out
         assert Path(self.test_dir, 'file1.txt').exists()
         assert Path(self.test_dir, 'file2.txt').exists()
@@ -95,13 +95,17 @@ class TestTouchCommand:
         subdir = Path(self.test_dir, 'subdir')
         subdir.mkdir()
         os.chdir(subdir)
-        
+
         touch(set(), ['../file1.txt'])
         assert Path(self.test_dir, 'file1.txt').exists()
 
-    def test_touch_nonexist_dir(self):
-        with pytest.raises(src.config.exceptions.PathError):
-            touch(set(), ['nonexist_dir/file.txt'])
+    def test_touch_nonexist_dir(self, capsys):
+        touch(set(), ['file1.txt', 'nonexist_dir/file.txt', 'file2.txt'])
+        captured = capsys.readouterr()
+
+        assert 'nonexist_dir/file.txt пропущен' in captured.out
+        assert Path(self.test_dir, 'file1.txt').exists()
+        assert Path(self.test_dir, 'file2.txt').exists()
 
     def test_touch_file_different_extensions(self):
         touch(set(), ['file.txt', 'file.py', 'file.md', 'file.json'])
@@ -132,7 +136,7 @@ class TestTouchCommand:
         finally:
             if os.path.exists(test):
                 os.remove(test)
-    
+
     def test_touch_permission_error(self, capsys):
         dir = Path(self.test_dir, 'dir')
         dir.mkdir()
