@@ -1,5 +1,6 @@
 import src.config.consts
 import src.config.exceptions
+import src.config.logger
 
 
 def history(flags: set, paths: list) -> None:
@@ -25,8 +26,16 @@ def history(flags: set, paths: list) -> None:
         raise src.config.exceptions.IncorrectInput(
             'Неверное количество аргументов для history'
         )
-    n = int(paths[0]) if paths else 0
-    with open(src.config.consts.HISTORY_PATH, 'r') as history:
-        commands = history.readlines()
-        for command in commands[-n:]:
-            print(command.strip())
+    try:
+        if paths and paths[0] == '0':
+            return None
+        n = int(paths[0]) if paths else 0
+        with open(src.config.consts.HISTORY_PATH, 'r') as history:
+            commands = history.readlines()
+            for command in commands[-n:]:
+                print(command.strip())
+    except ValueError:
+        print(f'Неправильный аргумент {paths[0]}')
+        src.config.logger.main_logger.error(
+            f'Неправильный аргумент {paths[0]}'
+        )

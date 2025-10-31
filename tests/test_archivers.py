@@ -103,7 +103,7 @@ class TestMakeArchive:
     def test_make_zip__tar(self):
         make_archive('zip', set(), ['source_dir', 'output'])
         make_archive('tar', set(), ['source_dir', 'output'])
-        
+
         assert Path(self.test_dir, 'output.zip').exists()
         assert Path(self.test_dir, 'output.tar.gz').exists()
 
@@ -126,12 +126,12 @@ class TestMakeArchive:
         file = Path(self.test_dir, 'dir', 'file.txt')
         file.touch()
         original_mode = file.stat().st_mode
-        
+
         try:
             file.chmod(0o000)
             make_archive('zip', set(), ['dir', 'output'])
             captured = capsys.readouterr()
-            
+
             assert 'Нет прав на архивирование' in captured.out
         finally:
             file.chmod(original_mode)
@@ -148,10 +148,10 @@ class TestUnpack:
         self.source_dir.mkdir()
         Path(self.source_dir, 'file1.txt').write_text('Content 1')
         Path(self.source_dir, 'file2.txt').write_text('Content 2')
-        
+
         shutil.make_archive('test_archive', 'zip', self.source_dir)
         shutil.make_archive('test_tar', 'gztar', self.source_dir)
-        
+
         shutil.rmtree(self.source_dir)
 
         yield
@@ -211,10 +211,10 @@ class TestUnpack:
 
     def test_unpack_preserves_content(self):
         unpack('unzip', set(), ['test_archive.zip'])
-        
+
         content1 = Path(self.test_dir, 'test_archive', 'file1.txt').read_text()
         content2 = Path(self.test_dir, 'test_archive', 'file2.txt').read_text()
-        
+
         assert content1 == 'Content 1'
         assert content2 == 'Content 2'
 
@@ -230,7 +230,7 @@ class TestUnpack:
             dir.chmod(0o555)
             unpack('unzip', set(), ['test_archive.zip'])
             captured = capsys.readouterr()
-            
+
             assert 'Нет прав на распаковку в текущую директорию' in captured.out
         finally:
             dir.chmod(original_mode)
@@ -251,9 +251,9 @@ class TestUnpack:
         dots_dir = Path(self.test_dir, 'dots_content')
         dots_dir.mkdir()
         Path(dots_dir, 'file.txt').touch()
-        
+
         shutil.make_archive('archive.with.dots', 'zip', dots_dir)
         shutil.rmtree(dots_dir)
-        
+
         unpack('unzip', set(), ['archive.with.dots.zip'])
         assert Path(self.test_dir, 'archive.with.dots').exists()
