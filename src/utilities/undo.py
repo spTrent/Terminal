@@ -42,10 +42,10 @@ def undo(flags: set, paths: list) -> None:
     else:
         try:
             for file_path, dest_path in paths:
-                if os.path.exists(dest_path):
-                    print(f'{dest_path} пропущен: уже существует')
+                if os.path.exists(file_path):
+                    print(f'{file_path} пропущен: уже существует')
                     src.config.logger.main_logger.error(
-                        f'{dest_path} пропущен: уже существует'
+                        f'{file_path} пропущен: уже существует'
                     )
                 else:
                     shutil.move(dest_path, file_path)
