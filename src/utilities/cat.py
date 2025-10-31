@@ -30,7 +30,7 @@ def cat(flags: set, paths: list[str]) -> None:
         try:
             path: str = src.config.functions.normalize_path(file)
             src.config.functions.is_correct_file(path)
-            with open(path, 'r') as f:
+            with open(path, 'r', encoding='utf-8') as f:
                 cont = f.read().strip()
                 if cont:
                     print(cont)
