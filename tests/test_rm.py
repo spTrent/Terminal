@@ -142,13 +142,13 @@ class TestRmCommand:
     def test_rm_dir_overwrite_trash(self):
         with patch('builtins.input', return_value='y'):
             rm({'r'}, ['dir1'])
-        
+
         Path(self.test_dir, 'dir1').mkdir()
         Path(self.test_dir, 'dir1', 'new_file.txt').write_text('New Content')
-        
+
         with patch('builtins.input', return_value='y'):
             rm({'r'}, ['dir1'])
-        
+
         assert not Path(self.test_dir, 'file1.txt', 'dir1').exists()
         assert Path(self.trash_dir, 'dir1', 'new_file.txt').exists()
         assert not Path(self.trash_dir, 'dir1', 'nested.txt').exists()
@@ -156,7 +156,7 @@ class TestRmCommand:
     def test_rm_permission_error(self, capsys):
         file_path = Path(self.test_dir, 'file1.txt')
         file_path.chmod(0o000)
-        
+
         try:
             rm(set(), ['file1.txt'])
             captured = capsys.readouterr()
@@ -169,11 +169,11 @@ class TestRmCommand:
         file_path = Path(self.test_dir, 'file2.txt')
         file_path.chmod(0o000)
         Path(self.test_dir, 'file3.txt').touch()
-        
+
         try:
             rm(set(), ['file1.txt', 'file2.txt', 'file3.txt'])
             captured = capsys.readouterr()
-            
+
             assert 'Ошибка: нет прав на удаление file2.txt' in captured.out
             assert not Path(self.test_dir, 'file1.txt').exists()
             assert not Path(self.test_dir, 'file3.txt').exists()
@@ -185,23 +185,23 @@ class TestRmCommand:
         nested = Path(self.test_dir, 'dir1', 'subdir')
         nested.mkdir()
         Path(nested, 'nested.txt').write_text('Nested Content')
-        
+
         with patch('builtins.input', return_value='y'):
             rm({'r'}, ['dir1'])
-        
+
         assert not Path(self.test_dir, 'dir1').exists()
         assert Path(self.trash_dir, 'dir1', 'subdir', 'nested.txt').exists()
 
     def test_rm_directory_with_many_files(self):
         many_files_dir = Path(self.test_dir, 'many_files')
         many_files_dir.mkdir()
-        
+
         for i in range(50):
             Path(many_files_dir, f'file_{i}.txt').touch()
-        
+
         with patch('builtins.input', return_value='y'):
             rm({'r'}, ['many_files'])
-        
+
         assert not many_files_dir.exists()
         assert Path(self.trash_dir, 'many_files').exists()
         assert all(
@@ -218,7 +218,7 @@ class TestRmCommand:
         assert Path(self.trash_dir, 'file1.txt').exists()
 
     def test_rm_removed_trash(self):
-        shutil.rmtree(self.trash_dir) 
+        shutil.rmtree(self.trash_dir)
         rm(set(), ['file1.txt'])
 
         assert os.path.exists(self.trash_dir)

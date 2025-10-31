@@ -1,5 +1,3 @@
-import os
-
 import src.config.exceptions
 import src.config.functions
 import src.config.logger
@@ -26,10 +24,14 @@ def touch(flag: set, paths: list) -> None:
             'Для touch не поддерживаются флаги'
         )
     for file in paths:
-        if not os.path.exists(file):
-            with open(file, 'w'):
+        try:
+            dest = src.config.functions.resolve_file_path('', file)
+            with open(dest, 'w'):
                 pass
-        else:
+        except PermissionError:
+            print(f'Нет прав на создание {file}')
+            src.config.logger.main_logger.error(f'Нет прав на создание {file}')
+        except src.config.exceptions.AlreadyExists:
             print(f'{file} пропущен: уже существует')
             src.config.logger.main_logger.error(
                 f'{file} пропущен: уже существует'
