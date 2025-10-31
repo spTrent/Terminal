@@ -6,6 +6,25 @@
 
 Мини-оболочка, реализующая основные команды управления файлами и каталогами средствами Python: просмотр, копирование, перемещение, удаление, работа с архивами (zip/tar), история команд, undo и поиск по содержимому
 
+---
+
+## Установка:
+
+    git clone https://github.com/spTrent/Terminal.git
+    cd Terminal
+---
+
+## Запуск:
+
+Для Linux:
+
+    python3 -m src.main 
+
+Для Windows:
+
+    python -m src.main
+
+
 Для Linux разделитель `/`
 
 Для Windows разделитель `\\`
@@ -300,13 +319,3 @@
 [2025-10-29 14:55:03] INFO: cd test
 
 [2025-10-29 14:55:04] ERROR: Не существует указанного пути test
-
-
-## Установка:
-
-    git clone https://github.com/spTrent/Terminal.git
-    cd Terminal
-
-## Запуск:
-
-    python3 -m src.main
