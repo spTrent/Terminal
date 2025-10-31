@@ -276,3 +276,15 @@ class TestLsCommand:
         captured = capsys.readouterr()
 
         assert all(f'file_{i}.txt' in captured.out for i in range(100))
+
+    def test_ls_permission_error(self, capsys):
+        subdir = Path(self.test_dir, 'subdir')
+        original_mode = subdir.stat().st_mode
+        try:
+            subdir.chmod(0o000)
+            ls({}, ['subdir'])
+            captured = capsys.readouterr()
+
+            assert 'Нет прав' in captured.out
+        finally:
+            subdir.chmod(original_mode)

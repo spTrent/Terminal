@@ -3,6 +3,7 @@ import stat
 from datetime import datetime
 
 import src.config.functions
+import src.config.logger
 
 
 def output(flags: set, path: str) -> None:
@@ -77,9 +78,13 @@ def ls(flags: set, paths: list[str]) -> None:
     for path in paths:
         path = src.config.functions.normalize_path(path)
         src.config.functions.is_correct_directory(path)
-        if pointer:
-            print(f'{path.split(os.sep)[-1]}: ')
-        if 'l' in flags:
-            detailed_output(flags, path)
-        else:
-            output(flags, path)
+        try:
+            if pointer:
+                print(f'{path.split(os.sep)[-1]}: ')
+            if 'l' in flags:
+                detailed_output(flags, path)
+            else:
+                output(flags, path)
+        except PermissionError:
+            print(f'Нет прав на чтение {path}')
+            src.config.logger.main_logger.error(f'Нет прав на чтение {path}')
