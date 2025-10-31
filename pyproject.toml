@@ -53,5 +53,6 @@ pythonpath = ['src/']
 omit = [
     "*/tests/*",
     "*/test_*.py",
-    "*/__init__.py"
+    "*/__init__.py",
+    "*/src/config/consts.py"
 ]

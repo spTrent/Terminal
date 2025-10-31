@@ -107,4 +107,3 @@ class TestHistoryCommand:
         captured = capsys.readouterr()
 
         assert 'Неправильный аргумент 14.1' in captured.out
-

@@ -49,6 +49,6 @@ def undo(flags: set, paths: list) -> None:
                     )
                 else:
                     shutil.move(dest_path, file_path)
-        except src.config.exceptions.PathError:
+        except FileNotFoundError:
             print(f'{file_path} удален')
             src.config.logger.main_logger.error(f'{file_path} удален')
