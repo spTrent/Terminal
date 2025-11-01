@@ -116,7 +116,12 @@ def tokenize(stdin: str) -> tuple[str, set, list[str]]:
     Raises:
         IncorrectCommand: Если введенная команда не поддерживается.
     """
-    tokens = shlex.split(stdin)
+    try:
+        tokens = shlex.split(stdin)
+    except ValueError:
+        raise src.config.exceptions.IncorrectInput(
+            'Неверный ввод'
+        )
     command, *args = tokens
     flags, paths = set(), []
     if command not in src.config.list_of_ut.UTILITIES:
