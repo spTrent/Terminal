@@ -144,15 +144,10 @@ class TestMvCommand:
 
     def test_mv_permission_error(self, capsys):
         Path(self.test_dir, 'file_perm.txt').touch()
-        original_mode = Path(self.test_dir).stat().st_mode
-        Path(self.test_dir).chmod(0o555)
-        try:
-            mv(set(), ['file_perm.txt', '~'])
-            captured = capsys.readouterr()
-
-            assert 'Недостаточно прав' in captured.out
-        finally:
-            Path(self.test_dir).chmod(original_mode)
+        mv(set(), ['file_perm.txt', '~/../root'])
+        captured = capsys.readouterr()
+        
+        assert 'Недостаточно прав' in captured.out
 
     def test_mv_file_with_spaces_in_name(self):
         Path(self.test_dir, 'file with spaces.txt').write_text('Content')
