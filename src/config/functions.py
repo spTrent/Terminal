@@ -1,8 +1,16 @@
 import os
 import shlex
 
-import src.config.exceptions
 import src.config.list_of_ut
+from src.config.exceptions import (
+    AlreadyExists,
+    IncorrectCommand,
+    IncorrectFlag,
+    IncorrectInput,
+    IsNotDirectory,
+    IsNotFile,
+    PathError,
+)
 
 
 def resolve_file_path(file: str, path: str) -> str:
@@ -30,10 +38,10 @@ def resolve_file_path(file: str, path: str) -> str:
     elif os.path.exists(path) and os.path.isdir(path):
         path = os.path.join(os.getcwd(), path, file)
         if os.path.exists(path) and os.path.isfile(path):
-            raise src.config.exceptions.AlreadyExists(f'{path} уже существует')
+            raise AlreadyExists(f'{path} уже существует')
         return path
     elif os.path.exists(path):
-        raise src.config.exceptions.AlreadyExists(f'{path} уже существует')
+        raise AlreadyExists(f'{path} уже существует')
     else:
         dir_path = os.sep.join(path.split(os.sep)[:-1])
         if not dir_path:
@@ -62,9 +70,7 @@ def normalize_path(path: str) -> str:
     elif os.path.exists(path):
         return os.path.join(os.getcwd(), path)
     else:
-        raise src.config.exceptions.PathError(
-            f'Не существует указанного пути {path}'
-        )
+        raise PathError(f'Не существует указанного пути {path}')
 
 
 def is_correct_directory(path: str) -> bool:
@@ -82,7 +88,7 @@ def is_correct_directory(path: str) -> bool:
     """
     if os.path.isdir(path):
         return True
-    raise src.config.exceptions.IsNotDirectory(f'{path} - не директория')
+    raise IsNotDirectory(f'{path} - не директория')
 
 
 def is_correct_file(path: str) -> bool:
@@ -100,7 +106,7 @@ def is_correct_file(path: str) -> bool:
     """
     if os.path.isfile(path):
         return True
-    raise src.config.exceptions.IsNotFile(f'{path} - не файл')
+    raise IsNotFile(f'{path} - не файл')
 
 
 def tokenize(stdin: str) -> tuple[str, set, list[str]]:
@@ -119,15 +125,11 @@ def tokenize(stdin: str) -> tuple[str, set, list[str]]:
     try:
         tokens = shlex.split(stdin)
     except ValueError:
-        raise src.config.exceptions.IncorrectInput(
-            'Неверный ввод'
-        )
+        raise IncorrectInput('Неверный ввод') from None
     command, *args = tokens
     flags, paths = set(), []
     if command not in src.config.list_of_ut.UTILITIES:
-        raise src.config.exceptions.IncorrectCommand(
-            f'Неизвестная команда {command}'
-        )
+        raise IncorrectCommand(f'Неизвестная команда {command}')
     if args:
         if args[0].startswith('--'):
             flags.add(args[0][2:])
@@ -157,5 +159,5 @@ def is_correct_flag(flag: set, allowed_flags: set) -> bool:
     """
     for f in flag:
         if f not in allowed_flags:
-            raise src.config.exceptions.IncorrectFlag(f'Неправильный флаг {f}')
+            raise IncorrectFlag(f'Неправильный флаг {f}')
     return True

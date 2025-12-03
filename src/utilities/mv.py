@@ -1,10 +1,10 @@
 import os
 import shutil
 
-import src.config.consts
-import src.config.exceptions
-import src.config.functions
-import src.config.logger
+from src.config.consts import FOR_UNDO_HISTORY
+from src.config.exceptions import AlreadyExists, IncorrectFlag, IncorrectInput
+from src.config.functions import normalize_path, resolve_file_path
+from src.config.logger import main_logger
 
 
 def mv(flags: set, paths: list[str]) -> None:
@@ -27,34 +27,24 @@ def mv(flags: set, paths: list[str]) -> None:
         AlreadyExists: Если целевой файл уже существует.
     """
     if flags:
-        raise src.config.exceptions.IncorrectFlag(
-            'Для mv не поддерживаются флаги'
-        )
+        raise IncorrectFlag('Для mv не поддерживаются флаги')
     if len(paths) < 2:
-        raise src.config.exceptions.IncorrectInput(
-            'Неверное количество аргументов для mv'
-        )
+        raise IncorrectInput('Неверное количество аргументов для mv')
     moved: list = []
     dest_path = paths[-1]
     for file in paths[:-1]:
         try:
             file_name = file.split(os.sep)[-1]
-            resolved_path = src.config.functions.resolve_file_path(
-                file_name, dest_path
-            )
-            file = src.config.functions.normalize_path(file)
+            resolved_path = resolve_file_path(file_name, dest_path)
+            file = normalize_path(file)
             shutil.move(file, resolved_path)
             moved.append((file, resolved_path))
         except PermissionError:
             print('Ошибка: Недостаточно прав')
-            src.config.logger.main_logger.error(
-                f'{file_name} пропущен: Недостаточно прав'
-            )
+            main_logger.error(f'{file_name} пропущен: Недостаточно прав')
 
-        except src.config.exceptions.AlreadyExists as message:
+        except AlreadyExists as message:
             print(f'{file_name} пропущен: {message}')
-            src.config.logger.main_logger.error(
-                f'{file_name} пропущен: {message}'
-            )
+            main_logger.error(f'{file_name} пропущен: {message}')
     if moved:
-        src.config.consts.FOR_UNDO_HISTORY.append(['mv', flags, moved])
+        FOR_UNDO_HISTORY.append(['mv', flags, moved])

@@ -6,4 +6,3 @@ def disable_logging():
     logging.disable(logging.CRITICAL)
     yield
     logging.disable(logging.NOTSET)
-    

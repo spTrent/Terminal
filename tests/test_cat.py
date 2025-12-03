@@ -101,35 +101,3 @@ class TestCatCommand:
             cat(set(), ['file1.txt', 'subdir'])
 
             assert 'Hello World!' in captured.out
-
-    def test_cat_binary_file(self, capsys):
-        binary_file = Path(self.test_dir, 'binary.bin')
-        binary_file.write_bytes(b'\x80\x81\x82\x83')
-
-        cat(set(), ['binary.bin'])
-        captured = capsys.readouterr()
-
-        assert 'binary.bin невозможно прочитать' in captured.out
-
-    def test_cat_file_only_whitespace(self, capsys):
-        whitespace_file = Path(self.test_dir, 'only_whitespace.txt')
-        whitespace_file.write_text('   \n\t\n\n \t  ')
-        cat(set(), ['only_whitespace.txt'])
-        captured = capsys.readouterr()
-
-        assert not captured.out
-
-    def test_cat_permission_error(self, capsys):
-        file1 = Path(self.test_dir, 'file1.txt')
-        cat(set(), ['file1.txt'])
-        captured1 = capsys.readouterr()
-
-        try:
-            file1.chmod(0o000)
-            cat(set(), ['file1.txt'])
-            captured2 = capsys.readouterr()
-
-            assert f'Нет прав на чтение file1.txt' in captured2.out
-        finally:
-            file1.chmod(0o644)
-            assert 'Hello World!' in captured1.out

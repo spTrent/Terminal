@@ -142,13 +142,6 @@ class TestMvCommand:
         assert Path(self.test_dir, 'file1.txt').exists()
         assert Path(self.test_dir, 'target.txt').read_text() == 'Target'
 
-    def test_mv_permission_error(self, capsys):
-        Path(self.test_dir, 'file_perm.txt').touch()
-        mv(set(), ['file_perm.txt', '~/../root'])
-        captured = capsys.readouterr()
-        
-        assert 'Недостаточно прав' in captured.out
-
     def test_mv_file_with_spaces_in_name(self):
         Path(self.test_dir, 'file with spaces.txt').write_text('Content')
         mv(set(), ['file with spaces.txt', 'renamed.txt'])

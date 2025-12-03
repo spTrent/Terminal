@@ -1,8 +1,7 @@
 import os
 
-import src.config.exceptions
-import src.config.functions
-import src.config.logger
+from src.config.exceptions import IncorrectFlag, IncorrectInput
+from src.config.functions import is_correct_directory, normalize_path
 
 
 def cd(flags: set, paths: list[str]) -> None:
@@ -28,18 +27,10 @@ def cd(flags: set, paths: list[str]) -> None:
         IsNotDirectory: Если путь указывает на файл.
     """
     if flags:
-        raise src.config.exceptions.IncorrectFlag(
-            'Для cd не поддерживаются флаги'
-        )
+        raise IncorrectFlag('Для cd не поддерживаются флаги')
     if len(paths) > 1:
-        raise src.config.exceptions.IncorrectInput(
-            'Слишком много аргументов для cd'
-        )
+        raise IncorrectInput('Слишком много аргументов для cd')
     paths = paths if paths else ['~']
-    path = src.config.functions.normalize_path(paths[0])
-    src.config.functions.is_correct_directory(path)
-    try:
-        os.chdir(path)
-    except PermissionError:
-        print('Нет прав')
-        src.config.logger.main_logger.error('Нет прав')
+    path = normalize_path(paths[0])
+    is_correct_directory(path)
+    os.chdir(path)

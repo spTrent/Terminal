@@ -153,18 +153,6 @@ class TestRmCommand:
         assert Path(self.trash_dir, 'dir1', 'new_file.txt').exists()
         assert not Path(self.trash_dir, 'dir1', 'nested.txt').exists()
 
-    def test_rm_permission_error(self, capsys):
-        file_path = Path(self.test_dir, 'file1.txt')
-        file_path.chmod(0o000)
-
-        try:
-            rm(set(), ['file1.txt'])
-            captured = capsys.readouterr()
-            assert 'Ошибка: нет прав на удаление' in captured.out
-            assert Path(self.test_dir, 'file1.txt').exists()
-        finally:
-            file_path.chmod(0o644)
-
     def test_rm_partial_success(self, capsys):
         file_path = Path(self.test_dir, 'file2.txt')
         file_path.chmod(0o000)

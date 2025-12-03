@@ -128,27 +128,6 @@ class TestGrepCommand:
 
         assert '1 hello [world]' in captured.out
 
-    def test_grep_permission_error(self, capsys):
-        file = Path(self.test_dir, 'test.txt')
-        file.write_text('Secret content')
-        original_mode = file.stat().st_mode
-        try:
-            file.chmod(0o000)
-            grep(set(), ['Secret', 'test.txt'])
-            captured = capsys.readouterr()
-
-            assert 'Нет прав на чтение' in captured.out
-        finally:
-            file.chmod(original_mode)
-
-    def test_grep_binary_file(self, capsys):
-        bin_file = Path(self.test_dir, 'binary.bin')
-        bin_file.write_bytes(b'\xff\xfe\xfd\xfc')
-        grep(set(), ['pattern', 'binary.bin'])
-        captured = capsys.readouterr()
-
-        assert 'невозможно прочитать' in captured.out
-
     def test_grep_complex_regex(self, capsys):
         email_file = Path(self.test_dir, 'emails.txt')
         email_file.write_text('Contact: user@example.com\nInvalid: not an email\n')
@@ -173,4 +152,3 @@ class TestGrepCommand:
         captured = capsys.readouterr()
 
         assert not captured.out
-

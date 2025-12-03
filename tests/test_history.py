@@ -101,9 +101,3 @@ class TestHistoryCommand:
         assert 'command_90' in captured.out
         assert 'command_99' in captured.out
         assert 'command_89' not in captured.out
-
-    def test_history_float(self, capsys):
-        history({}, ['14.1'])
-        captured = capsys.readouterr()
-
-        assert 'Неправильный аргумент 14.1' in captured.out

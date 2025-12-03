@@ -1,38 +1,35 @@
 import os
 import shutil
 
-import src.config.consts
-import src.config.exceptions
-import src.config.functions
-import src.config.logger
-import src.config.utilities
+from src.config.consts import HISTORY_PATH, TRASH_PATH, init_env
+from src.config.functions import tokenize
+from src.config.logger import main_logger
+from src.config.utilities import UTILITIES
 
 
 def main() -> None:
-    src.config.consts.init_env()
-    with open(src.config.consts.HISTORY_PATH, 'r') as f:
+    init_env()
+    with open(HISTORY_PATH, 'r') as f:
         history_lines = len(f.readlines())
-    while 1:
+    current_dir = os.getcwd().replace(os.path.expanduser('~'), '~')
+    while (stdin := input(f'{current_dir}$ ')) != 'exit':
         try:
-            current_dir = os.getcwd().replace(os.path.expanduser('~'), '~')
-            stdin = input(f'{current_dir}$ ')
-            with open(src.config.consts.HISTORY_PATH, 'a') as f:
+            with open(HISTORY_PATH, 'a') as f:
                 f.write(f'{history_lines + 1} {stdin}\n')
             history_lines += 1
-            src.config.logger.main_logger.info(stdin)
-            if not stdin or stdin == 'stop':
-                break
-            command, flags, paths = src.config.functions.tokenize(stdin)
+            main_logger.info(stdin)
+            command, flags, paths = tokenize(stdin)
             if command in ['zip', 'tar', 'unzip', 'untar']:
-                src.config.utilities.UTILITIES[command](command, flags, paths)
+                UTILITIES[command](command, flags, paths)
             else:
-                src.config.utilities.UTILITIES[command](flags, paths)
-            src.config.logger.main_logger.info('Success')
-
-        except src.config.exceptions.TerminalException as message:
+                UTILITIES[command](flags, paths)
+            main_logger.info('Success')
+        except Exception as message:
             print(f'{type(message).__name__}: {message}')
-            src.config.logger.main_logger.error(message)
-    shutil.rmtree(src.config.consts.TRASH_PATH)
+            main_logger.error(message)
+        finally:
+            current_dir = os.getcwd().replace(os.path.expanduser('~'), '~')
+    shutil.rmtree(TRASH_PATH)
 
 
 if __name__ == '__main__':

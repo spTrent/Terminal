@@ -1,8 +1,8 @@
 import os
 
-import src.config.exceptions
-import src.config.functions
-import src.config.logger
+from src.config.exceptions import AlreadyExists, IncorrectFlag, PathError
+from src.config.functions import resolve_file_path
+from src.config.logger import main_logger
 
 
 def mkdir(flag: set, paths: list) -> None:
@@ -22,27 +22,21 @@ def mkdir(flag: set, paths: list) -> None:
         IncorrectFlag: Если указаны флаги.
     """
     if flag:
-        raise src.config.exceptions.IncorrectFlag(
-            'Для mkdir не поддерживаются файлы'
-        )
+        raise IncorrectFlag('Для mkdir не поддерживаются файлы')
     for file in paths:
         try:
-            dest = src.config.functions.resolve_file_path('', file)
+            dest = resolve_file_path('', file)
             if not os.path.exists(dest):
                 os.mkdir(dest)
             else:
                 print(f'{file} пропущен: уже существует')
-                src.config.logger.main_logger.error(
-                    f'{file} пропущен: уже существует'
-                )
+                main_logger.error(f'{file} пропущен: уже существует')
         except PermissionError:
             print(f'Нет прав на создание {file}')
-            src.config.logger.main_logger.error(f'Нет прав на создание {file}')
-        except src.config.exceptions.AlreadyExists:
+            main_logger.error(f'Нет прав на создание {file}')
+        except AlreadyExists:
             print(f'{file} пропущен: уже существует')
-            src.config.logger.main_logger.error(
-                f'{file} пропущен: уже существует'
-            )
-        except src.config.exceptions.PathError as msg:
+            main_logger.error(f'{file} пропущен: уже существует')
+        except PathError as msg:
             print(f'{file} пропущен: {msg}')
-            src.config.logger.main_logger.error(f'{file} пропущен: {msg}')
+            main_logger.error(f'{file} пропущен: {msg}')

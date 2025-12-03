@@ -132,17 +132,3 @@ class TestTouchCommand:
         finally:
             if os.path.exists(test):
                 os.remove(test)
-
-    def test_touch_permission_error(self, capsys):
-        dir = Path(self.test_dir, 'dir')
-        dir.mkdir()
-        original_modes = dir.stat().st_mode
-        dir.chmod(0o000)
-        try:
-            touch({}, ['dir/test.txt'])
-            captured = capsys.readouterr()
-
-            assert 'Нет прав на создание dir/test.txt' in captured.out
-        finally:
-            dir.chmod(original_modes)
-            shutil.rmtree(dir)

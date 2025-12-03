@@ -35,9 +35,9 @@ def test_tokenize_without_flag():
 
 def test_utilities_dict_exists():
     for ut in src.config.list_of_ut.UTILITIES:
-        assert ut in src.config.utilities.UTILITIES 
-    
-def test_init_env():    
+        assert ut in src.config.utilities.UTILITIES
+
+def test_init_env():
     src.config.consts.init_env()
 
     assert not src.config.consts.FOR_UNDO_HISTORY

@@ -2,9 +2,14 @@ import os
 import shutil
 
 import src.config.consts
-import src.config.exceptions
-import src.config.functions
-import src.config.logger
+from src.config.exceptions import IncorrectInput, TerminalException
+from src.config.functions import (
+    is_correct_directory,
+    is_correct_file,
+    is_correct_flag,
+    normalize_path,
+)
+from src.config.logger import main_logger
 
 
 def is_trash_empty(file_name: str) -> None:
@@ -51,23 +56,21 @@ def rm(flags: set, paths: list[str]) -> None:
         IsNotDirectory: При попытке удалить директорию без флага r/recursive.
     """
 
-    src.config.functions.is_correct_flag(flags, {'r', 'recursive'})
+    is_correct_flag(flags, {'r', 'recursive'})
     if not paths:
-        raise src.config.exceptions.IncorrectInput(
-            'Не указан файл для удаления'
-        )
+        raise IncorrectInput('Не указан файл для удаления')
     removed = []
     for file in paths:
-        file = src.config.functions.normalize_path(file)
+        file = normalize_path(file)
         file_name = file.split(os.sep)[-1]
         file_trash = os.path.join(src.config.consts.TRASH_PATH, file_name)
         try:
             if flags:
-                src.config.functions.is_correct_directory(file)
+                is_correct_directory(file)
                 if os.path.samefile(
                     file, os.getcwd()
                 ) or os.getcwd().startswith(file):
-                    raise src.config.exceptions.TerminalException(
+                    raise TerminalException(
                         f'Ошибка: нет прав на удаление {file}'
                     )
                 approve = input(f'Удалить {file}? [y / n]')
@@ -76,15 +79,13 @@ def rm(flags: set, paths: list[str]) -> None:
                     shutil.copytree(file, file_trash)
                     shutil.rmtree(file)
             else:
-                src.config.functions.is_correct_file(file)
+                is_correct_file(file)
                 is_trash_empty(file_trash)
                 shutil.copy(file, file_trash)
                 os.remove(file)
             removed.append((file, file_trash))
         except PermissionError:
             print(f'Ошибка: нет прав на удаление {file_name}')
-            src.config.logger.main_logger.error(
-                f'{file_name} пропущен: недостаточно прав'
-            )
+            main_logger.error(f'{file_name} пропущен: недостаточно прав')
     if removed:
         src.config.consts.FOR_UNDO_HISTORY.append(['rm', flags, removed])

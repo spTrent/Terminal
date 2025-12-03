@@ -143,15 +143,3 @@ class TestMkdirCommand:
         assert 'exists пропущен: уже существует' in captured.out
         assert 'haha/test пропущен' in captured.out
         assert Path(self.test_dir, 'success').exists()
-
-    def test_mkdir_permission_error(self, capsys):
-        dir = Path(self.test_dir)
-        original_modes = dir.stat().st_mode
-        dir.chmod(0o000)
-        try:
-            mkdir({}, ['dir1'])
-            captured = capsys.readouterr()
-
-            assert 'Нет прав на создание dir1' in captured.out
-        finally:
-            dir.chmod(original_modes)

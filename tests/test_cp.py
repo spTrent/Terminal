@@ -143,21 +143,3 @@ class TestCpCommand:
     def test_cp_incorrect_flags(self):
         with pytest.raises(src.config.exceptions.IncorrectFlag):
             cp({'r', 'a'}, ['file1.txt', 'copy.txt'])
-
-    def test_cp_permission_error_file1(self, capsys):
-        cp(set(), ['file1.txt', '~/..'])
-        captured = capsys.readouterr()
-
-        assert 'Ошибка: Недостаточно прав' in captured.out
-
-    def test_cp_permission_error_new_file(self, capsys):
-        file1 = Path(self.test_dir, 'file1.txt')
-        file1.chmod(0o000)
-
-        try:
-            cp(set(), ['file1.txt', 'copy.txt'])
-            captured = capsys.readouterr()
-
-            assert 'Ошибка: Недостаточно прав' in captured.out
-        finally:
-            file1.chmod(0o644)

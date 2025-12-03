@@ -1,6 +1,5 @@
-import src.config.exceptions
-import src.config.functions
-import src.config.logger
+from src.config.exceptions import IncorrectFlag, IncorrectInput
+from src.config.functions import is_correct_file, normalize_path
 
 
 def cat(flags: set, paths: list[str]) -> None:
@@ -21,23 +20,14 @@ def cat(flags: set, paths: list[str]) -> None:
         IsNotFile: Если путь указывает на директорию.
     """
     if flags:
-        raise src.config.exceptions.IncorrectFlag(
-            'Для cat не поддерживаются флаги'
-        )
+        raise IncorrectFlag('Для cat не поддерживаются флаги')
     if not paths:
-        raise src.config.exceptions.IncorrectInput('Не указан файл для чтения')
+        raise IncorrectInput('Не указан файл для чтения')
     for file in paths:
-        try:
-            path: str = src.config.functions.normalize_path(file)
-            src.config.functions.is_correct_file(path)
-            with open(path, 'r', encoding='utf-8') as f:
-                cont = f.read().strip()
-                if cont:
-                    print(cont)
-
-        except UnicodeDecodeError:
-            print(f'{file} невозможно прочитать')
-            src.config.logger.main_logger.info(f'{file} невозможно прочитать')
-        except PermissionError:
-            print(f'Нет прав на чтение {file}')
-            src.config.logger.main_logger.info(f'Нет прав на чтение {file}')
+        path: str = normalize_path(file)
+        is_correct_file(path)
+        with open(path, 'r', encoding='utf-8') as f:
+            cont = f.read().strip()
+            if cont:  # Нужна, чтобы при вызове на cat на
+                # пустой файл не было пустой строки между вызовами
+                print(cont)

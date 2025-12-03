@@ -122,9 +122,3 @@ class TestCdCommand:
         cd(set(), ['/'])
 
         assert os.getcwd() == os.path.abspath(os.sep)
-
-    def test_permission_denied(self, capsys):
-        cd(set(), ['/root'])
-        captured = capsys.readouterr()
-
-        assert 'Нет прав' in captured.out

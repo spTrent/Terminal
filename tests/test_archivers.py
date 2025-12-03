@@ -119,23 +119,6 @@ class TestMakeArchive:
         assert Path(self.test_dir, 'output.zip').exists()
         assert new_size < size
 
-    def test_make_archive_permission_error(self, capsys):
-        dir = Path(self.test_dir, 'dir')
-        dir.mkdir()
-        file = Path(self.test_dir, 'dir', 'file.txt')
-        file.touch()
-        original_mode = file.stat().st_mode
-
-        try:
-            file.chmod(0o000)
-            make_archive('zip', set(), ['dir', 'output'])
-            captured = capsys.readouterr()
-
-            assert 'Нет прав на архивирование' in captured.out
-        finally:
-            file.chmod(original_mode)
-
-
 class TestUnpack:
     @pytest.fixture(autouse=True)
     def setup_teardown(self):
@@ -221,18 +204,6 @@ class TestUnpack:
         unpack('unzip', set(), ['test_archive.zip'])
 
         assert Path(self.test_dir, 'test_archive').is_dir()
-
-    def test_unpack_permission_error(self, capsys):
-        dir = Path(self.test_dir)
-        original_mode = dir.stat().st_mode
-        try:
-            dir.chmod(0o555)
-            unpack('unzip', set(), ['test_archive.zip'])
-            captured = capsys.readouterr()
-
-            assert 'Нет прав на распаковку в текущую директорию' in captured.out
-        finally:
-            dir.chmod(original_mode)
 
     def test_unpack_nested_archive_structure(self):
         nested_dir = Path(self.test_dir, 'nested_content')

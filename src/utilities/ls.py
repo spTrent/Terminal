@@ -2,8 +2,12 @@ import os
 import stat
 from datetime import datetime
 
-import src.config.functions
 import src.config.logger
+from src.config.functions import (
+    is_correct_directory,
+    is_correct_flag,
+    normalize_path,
+)
 
 
 def output(flags: set, path: str) -> None:
@@ -72,12 +76,12 @@ def ls(flags: set, paths: list[str]) -> None:
         IsNotDirectory: Если путь не является директорией.
         PathError: Если указана несуществующая директория.
     """
-    src.config.functions.is_correct_flag(flags, {'l', 'a', 'all'})
+    is_correct_flag(flags, {'l', 'a', 'all'})
     paths = paths if paths else [os.getcwd()]
     pointer = True if len(paths) > 1 else False
     for path in paths:
-        path = src.config.functions.normalize_path(path)
-        src.config.functions.is_correct_directory(path)
+        path = normalize_path(path)
+        is_correct_directory(path)
         try:
             if pointer:
                 print(f'{path.split(os.sep)[-1]}: ')
