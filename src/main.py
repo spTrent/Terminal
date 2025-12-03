@@ -13,6 +13,8 @@ def main() -> None:
         history_lines = len(f.readlines())
     current_dir = os.getcwd().replace(os.path.expanduser('~'), '~')
     while (stdin := input(f'{current_dir}$ ')) != 'exit':
+        if not stdin:
+            continue
         try:
             with open(HISTORY_PATH, 'a') as f:
                 f.write(f'{history_lines + 1} {stdin}\n')
