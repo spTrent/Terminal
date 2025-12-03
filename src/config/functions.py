@@ -12,7 +12,6 @@ from src.config.exceptions import (
     PathError,
 )
 
-
 def resolve_file_path(file: str, path: str) -> str:
     """
     Преобразует путь назначения для утилит, которые создают файлы.
@@ -31,24 +30,20 @@ def resolve_file_path(file: str, path: str) -> str:
         PathError: Если родительская директория не существует.
         IsNotDirectory: Если родительская директория не директория.
     """
-    path = path.rstrip(os.sep)
-    path = path.replace('~', os.path.expanduser('~'))
-    if os.path.exists(path) and os.path.isabs(path) and os.path.isdir(path):
-        return os.path.join(path, file)
-    elif os.path.exists(path) and os.path.isdir(path):
-        path = os.path.join(os.getcwd(), path, file)
-        if os.path.exists(path) and os.path.isfile(path):
-            raise AlreadyExists(f'{path} уже существует')
-        return path
-    elif os.path.exists(path):
-        raise AlreadyExists(f'{path} уже существует')
+    abs_path = os.path.abspath(os.path.expanduser(path.rstrip(os.sep)))
+    if os.path.isdir(abs_path):
+        target_path = os.path.join(abs_path, file)
     else:
-        dir_path = os.sep.join(path.split(os.sep)[:-1])
-        if not dir_path:
-            return os.path.join(os.getcwd(), path)
-        dir_path = normalize_path(dir_path)
-        is_correct_directory(dir_path)
-        return path
+        target_path = abs_path
+    if os.path.exists(target_path):
+        raise AlreadyExists(f'{target_path} уже существует')
+
+    parent_dir = os.path.dirname(target_path)
+    if not os.path.exists(parent_dir):
+        raise PathError(f'Родительская директория {parent_dir} не существует')
+    if not os.path.isdir(parent_dir):
+        raise IsNotDirectory(f'{parent_dir} не является директорией')
+    return target_path
 
 
 def normalize_path(path: str) -> str:
